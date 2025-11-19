@@ -1,1 +1,1 @@
-# Automatic-Edge-Region-Processing-for-Spectral-Interpolation
+# MATLABでRFコムのデータ処理
