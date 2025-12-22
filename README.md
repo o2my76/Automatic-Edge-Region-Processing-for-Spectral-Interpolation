@@ -14,5 +14,7 @@ MathWorks社が提供するMATLABを用いて, データ処理からグラフ表
 ## プログラムに必要なもの
 ### 1. MATLAB
 MATLABをインストールしてください.
-  Campus-Wide License を導入している大学では, 大学のメールアドレスで MathWorks アカウントを作成することで MATLABを入手できます.
+
+  - Campus-Wide License を導入している大学では, 大学のメールアドレスで MathWorks アカウントを作成することで MATLABを入手できます.
+  
   詳細は[こちら](https://jp.mathworks.com/academia/tah-support-program/eligibility.html)
