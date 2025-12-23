@@ -43,9 +43,43 @@ HITRAN on the Web のリンクは[こちら](https://hitran.iao.ru/)
     <img width="1676" height="328" alt="image" src="https://github.com/user-attachments/assets/3af9d48b-fd7a-4307-abf7-c1d7db4a7e4b" />
 
 ### 3.1. 濃度 100 % のガスの透過率スペクトルの取得方法について
-アカウント作成後, 「Gas mixture > Mixtures of isotopologues」から混合したいガスを選択します. <br>
-例として, 研究室で扱っている Wavelength References社 のシアン化水素ガス (HCN-13-H(5.5)-25-FCAPC) の透過率スペクトルを取得してみます. <br>
-データシートは[こちら](https://www.wavelengthreferences.com/wp-content/uploads/Data-HCN.pdf)
+アカウント作成後, 「Gas mixture > Mixtures of isotopologues」から混合したいガスを選択します.
+
+例として, 研究室で扱っている シアン化水素ガス (HCN-13-H(5.5)-25-FCAPC) の透過率スペクトルを取得してみます. <br>
+データシートは[こちら](https://www.wavelengthreferences.com/wp-content/uploads/Data-HCN.pdf) (Wavelength References 社) 
+
+まず, 左側から混合したいガスを選択し, 「Origin of the mixture」のプルダウンから「User-difined」を選択します.
+<img width="1852" height="344" alt="image" src="https://github.com/user-attachments/assets/616c7ee0-0015-4a0b-9f4d-2f26fbcb01d6" />
+<br>
+選択すると, 最初は下のように「No results found.」と表記されるので, 右上の「Create mixture」から混合ガスを生成します.
+<img width="1924" height="320" alt="image" src="https://github.com/user-attachments/assets/ad3ff722-ae78-4954-94f2-102084b608e1" />
+<br>
+その後, 「Mixing ratio」の「+」アイコンから同位体を選択します. (「Title」は入力自由ですが, 入力しないとエラーが出ます.)
+<img width="1620" height="920" alt="image" src="https://github.com/user-attachments/assets/671e8245-fb68-46c9-b95a-e39863cf313a" />
+<br>
+今回は「2. H13C14N (134)」を選択します.
+<img width="1932" height="480" alt="image" src="https://github.com/user-attachments/assets/6bdde8e2-c52d-4abb-96c0-78e12dd78689" />
+<br>
+選択後, 「Volume share」からガス濃度を入力し, 保存アイコンを選択して値を保存します. (1 → 100%)
+<img width="1944" height="364" alt="image" src="https://github.com/user-attachments/assets/8d6ea561-fb9b-400b-b038-835b83022a51" />
+<br>
+最後に, 「Save」を選択して完了です. (別の混合ガスを生成する場合は同じ作業を繰り返してください.)
+<img width="1828" height="992" alt="image" src="https://github.com/user-attachments/assets/844bd6a6-d685-4df1-8652-5f331ea20dcb" />
+
+ここまででは, 混合ガスの比率を設定しただけなので, まだシアン化水素ガスとしての保存ができていません. <br>
+次に, 「Gas mixtures > Gas mixtures」から先ほど生成した混合ガスをシアン化水素ガスとして保存します.
+
+まず, 先ほどと同様に「Origin of the mixture > User-defined」から右上の「Create mixture」を選択します.
+<img width="2424" height="292" alt="image" src="https://github.com/user-attachments/assets/209794af-ca87-41e2-bb85-991b41f04074" />
+<br>
+選択後, 「Mixing ratio」の「+」アイコンを選択し, 「Molecule」を決定します. (今回は「23. Hydrogen cyanide (HCN)」を選択します.)
+<img width="1412" height="360" alt="image" src="https://github.com/user-attachments/assets/7685c3ba-6687-403b-95c7-12e3788470da" />
+<br>
+その後, 「Mixture of isotopologues」のプルダウンから先ほど保存した混合ガスを選択します.
+<img width="2224" height="492" alt="image" src="https://github.com/user-attachments/assets/623808b0-a0ec-4c72-85a9-513af13967b1" />
+選択後, 「Volume share」からガス濃度を入力し, 保存アイコンを選択して値を保存します.
+<img width="2132" height="404" alt="image" src="https://github.com/user-attachments/assets/c8cc510a-d551-4540-ac43-8d34c877e2b9" />
+
 
 
 ## 研究内容と基本知識について
