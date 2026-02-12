@@ -22,9 +22,9 @@ MathWorks社が提供するMATLABを用いて, データ処理からグラフ表
 ### 1. MATLAB
 MATLABをインストールしてください.
 
-  - Campus-Wide License を導入している大学では, **大学のメールアドレス**で MATLAB を入手できます.
-
-    詳細は[こちら](https://jp.mathworks.com/academia/tah-support-program/eligibility.html) / 東京電機大学の学生は[こちら](https://www.mrcl.dendai.ac.jp/mrcl/it-service/software/matlab/)
+> [!NOTE]
+> Campus-Wide License を導入している大学では, **大学のメールアドレス**で MATLAB を入手できます.
+> 詳細は[こちら](https://jp.mathworks.com/academia/tah-support-program/eligibility.html) / 東京電機大学の学生は[こちら](https://www.mrcl.dendai.ac.jp/mrcl/it-service/software/matlab/)
 
 ### 2. 使用する MATLAB Toolbox
 下記の Toolbox のインストールが必要です.
@@ -35,12 +35,36 @@ MATLABをインストールしてください.
 MATLAB インストール時にまとめて追加できます. インストール済みの場合は「ホーム > アドオン」から検索し、インストールしてください.
 
 ### 3. HITRAN
-HITRAN とは, 分子がどの波長(周波数)の光を, どれくらい吸収するかをまとめた分子分光データベースです. <br>
+HITRAN とは, 分子がどの波長(周波数)の光を, どれくらい吸収するかをまとめた分子分光データベースです.
+
 HITRAN on the Web のリンクは[こちら](https://hitran.iao.ru/)
 
+### 4. Visual Studio Code
+Visual Studio Code (VSCode) とは, Microsoft社が提供するコードエディタです. 
+<br>
+さまざまなプログラミング言語に対応しており, 拡張機能を用いることで MATLAB 言語にも対応可能です. 
+<br>
+さらに, GitHub と連携することでソースコードのバージョン管理と共有を行うことができます. 
+
+Visual Studio Code のダウンロードリンクは[こちら](https://code.visualstudio.com/download)
+
+### 5. 使用する VSCode 拡張機能
+VSCode には様々な拡張機能がありますが, ここでは必須の拡張機能に加え, 便利な拡張機能を紹介します.
+  - **MATLAB (必須)**
+  - **Japanese Language Pack for Visual Studio Code** <br>
+　VSCode はデフォルトの表示言語が英語になっているため, 表示言語を日本語にすることができます.
+  - **GitLens** <br>
+  　VSCode 上でソースコードのコミット履歴等を確認することができる強力ツールです.
+  - **Indent Rainbow** <br>
+  　VSCode でコードのインデントを色分けして表示してくれるツールです.
+  - **Identicator** <br>
+  　現在カーソルがあるインデント階層を縦線で協調表示してくれるツールです.
+  
+
 ## HITRANによる混合ガスの透過率スペクトル取得方法について
-※ データを作成するためには, まず**アカウントを作成する**必要があります. 右上の鍵マークからアカウントを作成してください.
-<img width="1676" height="328" alt="image" src="https://github.com/user-attachments/assets/3af9d48b-fd7a-4307-abf7-c1d7db4a7e4b" />
+> [!NOTE]
+> データを作成するためには, まず**アカウントを作成する**必要があります. 右上の鍵マークからアカウントを作成してください.
+> <img width="1676" height="328" alt="image" src="https://github.com/user-attachments/assets/3af9d48b-fd7a-4307-abf7-c1d7db4a7e4b" /> <br>
 アカウント作成後, 「Gas mixture > Mixtures of isotopologues」から混合したいガスを選択します.
 
 例として, 研究室で扱っている シアン化水素ガス (HCN-13-H(5.5)-25-FCAPC) の透過率スペクトルを取得してみます. <br>
@@ -88,15 +112,17 @@ HITRAN on the Web のリンクは[こちら](https://hitran.iao.ru/)
 <br>
 実行結果は, 「Gas mixtures > Simulation results」から確認でき, 「Plot selected」より見ることができます. <br>
 また, 右側にあるダウンロードアイコンから .txt 形式で透過率スペクトルの保存ができます. <br>
-※保存した .txtファイルの横軸は波数なので, 光周波数に換算する場合は横軸に **29979245800** を掛けてください.
 <img width="2880" height="604" alt="image" src="https://github.com/user-attachments/assets/e0755e67-145b-4428-bbc1-1100178125d8" />
 <img width="3320" height="1840" alt="image" src="https://github.com/user-attachments/assets/ae09650f-5c51-4721-a82f-cd99399fe8f7" />
-<br>
 
+> [!IMPORTANT]
+> 保存した .txtファイルの横軸は波数なので, 光周波数に換算する場合は横軸に **29979245800** を掛けてください.
 
+## 免責事項
+本リポジトリで提供するプログラム，スクリプト，およびドキュメント類は，参考目的で公開するものです．内容や動作については可能な限り検証していますが，その正確性，完全性，安全性，動作，特定用途への適合性を保証するものではありません．
 
+本リポジトリのプログラムやコードを使用したことによってユーザーまたは第三者に生じたいかなる損害，トラブル，データ損失，または不利益についても，作者は一切の責任を負いません．
 
-## 研究内容と基本知識について
-### 1. 光周波数コム(光コム)とは
-周波数軸上に等間隔に並ぶ成分(モード)からなる櫛形のスペクトルを持った光信号です.
-光コムの"**コム**"は
+利用する場合は，ユーザー自身の責任において動作環境や依存関係，ライセンス条件を十分確認したうえでご利用ください．
+
+本リポジトリの内容は予告なく変更，削除されることがありますので，あらかじめご了承ください．
