@@ -443,7 +443,7 @@ cutOPY2_Est = cell(1, n); cutOPY2_Ave = cell(1, n);
 
 % 事前準備2: 算出したそれぞれのピーク間隔より算出した光補間量による倍率算出 (光補間量/RF補間量)
 A_Est = OpDiff_Est / RFDiff;                         % 推定値の倍率の算出
-A_Ave = OpDiff_Ave / RFDiff *1.00355;                         % 平均値を用いた倍率の算出
+A_Ave = OpDiff_Ave / RFDiff;                         % 平均値を用いた倍率の算出
 
 %% 算出した倍率を用いて、RF領域から光領域へ自動で変換
 % 算出した倍率を用いてRF領域から光領域へ変換 ※スペクトル毎に変換式が異なるので注意
