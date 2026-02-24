@@ -109,6 +109,11 @@ if Judge == 1
     if ~exist(EmfFolder, 'dir')
         mkdir(EmfFolder);
     end
+    % csv用のサブフォルダを作成
+    CsvFolder = fullfile(NewFolder,[Name, '_csv']);
+    if ~exist(CsvFolder, 'dir')
+        mkdir(CsvFolder);
+    end
 end
 
 % 波長計で取得した時間波形の保存 (emf形式)
@@ -641,6 +646,7 @@ hold off
 % グラフの保存 (emf形式)
 if Judge == 1
     saveas(gcf, fullfile(EmfFolder, '8.1.1 Cutted EO-Comb Spectrum of Estimated.emf'), 'emf');
+    writetable(table(AX2(:), AY2(:), 'VariableNames', {'Frequency [THz]', 'Intensity [a.u.]'}), fullfile(CsvFolder, 'CuttedEOCombSpectrum_Estimated.csv'));
 end
 
 % 8.1.2 吸収線スペクトルの取得及び表示、HITRANとの比較 (推定値)
@@ -755,6 +761,7 @@ fontname("Times New Roman")                                   % フォント名�
 % グラフの保存 (emf形式)
 if Judge == 1
     saveas(gcf, fullfile(EmfFolder, '8.2.2 Optical Absorption of Average.emf'), 'emf');
+    writetable(table(BX1(:), Absorption_Ave(:), 'VariableNames', {'Frequency [THz]', 'Transmittance [a.u.]'}), fullfile(CsvFolder, 'OpticalAbsorption_Average.csv'));
 end
 
 mean(diff(BX1/1e6))
