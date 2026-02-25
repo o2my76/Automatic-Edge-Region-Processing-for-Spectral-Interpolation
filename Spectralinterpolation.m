@@ -12,12 +12,12 @@ OpRep = 25e9;                                % 光モード間隔 (繰り返し�
 RFRep = 0.35e6;                              % RFモード間隔
 
 % 実行するフォルダ名を入力、データ保存の有無決定
-Name = 'my35';                               % 読み込むBinファイルが入ったフォルダ名を入力
+Name = 'my31';                               % 読み込むBinファイルが入ったフォルダ名を入力
 Judge = 1;                                   % データ保存の有無 (Yes: 1, No: 1以外の数値 を入力)
 
 % 波長計で取得した時間を入力 [s] (適宜変更すること)
-AcquisitionMin = 8;                          % データ取得時間 [分]
-AcquisitionSec = 12;                         % データ取得時間 [秒]
+AcquisitionMin = 6;                          % データ取得時間 [分]
+AcquisitionSec = 25;                         % データ取得時間 [秒]
 
 AcquisitionTime = 60 * AcquisitionMin + AcquisitionSec;
 
@@ -646,7 +646,6 @@ hold off
 % グラフの保存 (emf形式)
 if Judge == 1
     saveas(gcf, fullfile(EmfFolder, '8.1.1 Cutted EO-Comb Spectrum of Estimated.emf'), 'emf');
-    writetable(table(AX2(:), AY2(:), 'VariableNames', {'Frequency [THz]', 'Intensity [a.u.]'}), fullfile(CsvFolder, 'CuttedEOCombSpectrum_Estimated.csv'));
 end
 
 % 8.1.2 吸収線スペクトルの取得及び表示、HITRANとの比較 (推定値)
@@ -672,6 +671,7 @@ fontname("Times New Roman")                                   % フォント名�
 % グラフの保存 (emf形式)
 if Judge == 1
     saveas(gcf, fullfile(EmfFolder, '8.1.2 Optical Absorption of Estimated.emf'), 'emf');
+    writetable(table(AX1(:)/1e12, Absorption_Est(:), 'VariableNames', {'Frequency [THz]', 'Transmittance [a.u.]'}), fullfile(CsvFolder, 'OpticalAbsorption_Estimated.csv'));
 end
 
 %% ピーク位置の検出 (推定値)
@@ -761,7 +761,7 @@ fontname("Times New Roman")                                   % フォント名�
 % グラフの保存 (emf形式)
 if Judge == 1
     saveas(gcf, fullfile(EmfFolder, '8.2.2 Optical Absorption of Average.emf'), 'emf');
-    writetable(table(BX1(:), Absorption_Ave(:), 'VariableNames', {'Frequency [THz]', 'Transmittance [a.u.]'}), fullfile(CsvFolder, 'OpticalAbsorption_Average.csv'));
+    writetable(table(BX1(:)/1e12, Absorption_Ave(:), 'VariableNames', {'Frequency [THz]', 'Transmittance [a.u.]'}), fullfile(CsvFolder, 'OpticalAbsorption_Average.csv'));
 end
 
 mean(diff(BX1/1e6))
@@ -1063,6 +1063,7 @@ fontname("Times New Roman")                                   % フォント名�
 % グラフの保存 (emf形式)
 if Judge == 1
     saveas(gcf, fullfile(EmfFolder, '11.1.1 Baseline Corrected Optical Absorption of Estimated.emf'), 'emf');
+    writetable(table(AX1(:)/1e12, Div_Absorption_Est(:), 'VariableNames', {'Frequency [THz]', 'Transmittance [a.u.]'}), fullfile(CsvFolder, 'BaselineCorrectedOpticalAbsorption_Estimated.csv'));
 end
 
 % 11.1.2 吸収線ピーク位置の検出、HITRANとの比較 (推定値)
@@ -1115,6 +1116,7 @@ fontname("Times New Roman")                                   % フォント名�
 % グラフの保存 (emf形式)
 if Judge == 1
     saveas(gcf, fullfile(EmfFolder, '11.2.1 Baseline Corrected Optical Absorption of Average.emf'), 'emf');
+    writetable(table(BX1(:)/1e12, Div_Absorption_Ave(:), 'VariableNames', {'Frequency [THz]', 'Transmittance [a.u.]'}), fullfile(CsvFolder, 'BaselineCorrectedOpticalAbsorption_Average.csv'));
 end
 
 % 11.2.2 吸収線ピーク位置の検出、HITRANとの比較 (平均値)
