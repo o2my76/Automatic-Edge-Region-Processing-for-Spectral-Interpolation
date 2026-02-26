@@ -12,12 +12,12 @@ OpRep = 25e9;                                % 光モード間隔 (繰り返し�
 RFRep = 0.35e6;                              % RFモード間隔
 
 % 実行するフォルダ名を入力、データ保存の有無決定
-Name = 'my31';                               % 読み込むBinファイルが入ったフォルダ名を入力
+Name = 'my35';                               % 読み込むBinファイルが入ったフォルダ名を入力
 Judge = 1;                                   % データ保存の有無 (Yes: 1, No: 1以外の数値 を入力)
 
 % 波長計で取得した時間を入力 [s] (適宜変更すること)
-AcquisitionMin = 6;                          % データ取得時間 [分]
-AcquisitionSec = 25;                         % データ取得時間 [秒]
+AcquisitionMin = 8;                          % データ取得時間 [分]
+AcquisitionSec = 12;                         % データ取得時間 [秒]
 
 AcquisitionTime = 60 * AcquisitionMin + AcquisitionSec;
 
@@ -76,7 +76,7 @@ plot(Min_LocsTime, Min_wavelength, 'bv', 'MarkerFaceColor', 'w');               
 
 hold off
 
-% 取得した最大値と最小値の平均値から中心波長の算出
+% 取得した最大値と最小値の算出値から中心波長の算出
 disp('Min wavelength [nm]'); disp(num2str(Min_wavelength*1e9, '%.4f  '));          % 算出した中心波長の表示
 disp('Max wavelength [nm]'); disp(num2str(Max_wavelength*1e9, '%.4f  '));          % 算出した中心波長の表示
 
@@ -88,8 +88,8 @@ disp('Center Frequency [THz]'); disp(Fc/1e12);                                  
 % 中心波長の最大値と最小値から光補間量の推定値の算出
 OpDiff_Max = 299792458 / mean(Max_wavelength);                                     % 波長の最大値の平均から光周波数に変換
 OpDiff_Min = 299792458 / mean(Min_wavelength);                                     % 波長の最小値の平均から光周波数に変換
-OpDiff_Est = (OpDiff_Min - OpDiff_Max) / 1.5;                                      % 光補間量の算出 (推定値)
-disp('Optical Interpolation Amount [GHz]'); disp(OpDiff_Est/1e9);                  % 光補間量を表示
+OpDiff_modConv = (OpDiff_Min - OpDiff_Max) / 1.5;                                      % 光補間量の算出 (推定値)
+disp('Optical Interpolation Amount [GHz]'); disp(OpDiff_modConv/1e9);                  % 光補間量を表示
 
 
 %% データの保存 (emf 形式) ※保存先があっているか確認
@@ -109,22 +109,22 @@ if Judge == 1
     if ~exist(EmfFolder, 'dir')
         mkdir(EmfFolder);
     end
-    % csv用のサブフォルダを作成
-    CsvFolder = fullfile(NewFolder,[Name, '_csv']);
-    if ~exist(CsvFolder, 'dir')
-        mkdir(CsvFolder);
+    % txt用のサブフォルダを作成
+    TxtFolder = fullfile(NewFolder,[Name, '_txt']);
+    if ~exist(TxtFolder, 'dir')
+        mkdir(TxtFolder);
     end
 end
 
 % 波長計で取得した時間波形の保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '0. Acquisition of wavelength.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_0. Acquisition of wavelength.emf']), 'emf');
 end
 
 % 実験系の各パラメータを記録、保存
 if Judge == 1
     % 保存するファイル名を作成 (%.6f: 小数点以下6桁の浮動小数点数を出力, \n: 改行)
-    txtFileName = fullfile(NewFolder, 'Results.txt');
+    txtFileName = fullfile(NewFolder, [Name, '_Results.txt']);
     fid = fopen(txtFileName, 'w');                                                % 書き込みで開く
     fprintf(fid, 'Executed at: %s\n', string(datetime('now', 'Format', 'yyyy_MMdd HH;mm;ss')));
     fprintf(fid, 'File Name: %s  \n', Name);
@@ -132,7 +132,7 @@ if Judge == 1
     fprintf(fid, 'Center wavelength: %.6f nm \n', Center_wavelength*1e9);
     fprintf(fid, 'Center Frequency: %.6f THz \n', Fc/1e12);
     fprintf(fid, 'RF Interpolation amount: %.2f MHz \n', RFDiff/1e6);
-    fprintf(fid, 'Optical Interpolation amount: %.6f GHz \n\n', OpDiff_Est/1e9);
+    fprintf(fid, 'Optical Interpolation amount: %.6f GHz \n\n', OpDiff_modConv/1e9);
     fclose(fid);                                                                  % ファイルを閉じる
 end
 
@@ -173,7 +173,7 @@ fontname("Times New Roman")                                                     
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '1.1 Referenced Interferogram.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_1.1 Referenced Interferogram.emf']), 'emf');
 end
 
 % 1.2 ファイルパスの指定（透過光スペクトル）
@@ -202,7 +202,7 @@ fontname("Times New Roman")                                                     
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '1.2 Transmitted Interferogram.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_1.2 Transmitted Interferogram.emf']), 'emf');
 end
 
 
@@ -241,7 +241,7 @@ fontname("Times New Roman")                                   % フォント名�
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '2.1 Not Smoothed RF Spectrum.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_2.1 Not Smoothed RF Spectrum.emf']), 'emf');
 end
 
 toc;
@@ -249,7 +249,7 @@ toc;
 
 %% デュアルコムスペクトルのスムージング処理 (平滑化)
 % スムージング処理
-smth = 1.8e9 / Fs * 90;                                       % スムージング量の設定 (設定した数のサンプル数でそれぞれ平均値をとる)
+smth = 1.8e9 / Fs * 90;                                       % スムージング量の設定 (設定した数のサンプル数でそれぞれ算出値をとる)
 disp('Smoothing Amount'); disp(smth);                         % スムージング量の表示
 SmthCombA = movmean(abs(CombA), smth);                        % RF参照光スペクトルのスムージング処理
 SmthCombB = movmean(abs(CombB), smth);                        % RF透過光スペクトルのスムージング処理
@@ -284,7 +284,7 @@ fontname("Times New Roman")                                   % フォント名�
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '2.2 Smoothed RF Spectrum.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_2.2 Smoothed RF Spectrum.emf']), 'emf');
 end
 
 
@@ -310,7 +310,7 @@ fontname("Times New Roman")                                   % フォント名�
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '2.3 RF Absorption.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_2.3 RF Absorption.emf']), 'emf');
 end
 
 %% RF吸収線スペクトルのスムージング処理 (必要であればコメント化解除して使用)
@@ -372,7 +372,7 @@ fontname("Times New Roman")                                   % フォント名�
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '3.1.1 Noise masked RF Absorption.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_3.1.1 Noise masked RF Absorption.emf']), 'emf');
 end
 
 
@@ -382,7 +382,7 @@ end
 % 3.1.2 RF吸収線のピーク位置の検出
 RFminPeakDistance = 0.05e6;                                                % 検出するピーク間隔の設定 (あえてここでの間隔を短くし、その後不要なピーク成分を除去)
 
-% 設定した範囲内でのピーク値の検出 (「RFPeakAbsorption」: y軸(ピーク値)　「RFPeakLocation」: x軸(ピーク位置) )
+% 設定した範囲内でのピーク値の検出 (「RFPeakAbsorption」: y軸(ピーク値) 「RFPeakLocation」: x軸(ピーク位置) )
 [RFPeakAbsorption, RFPeakLocation] = findpeaks(-SmthAbsorption, f3, 'MinPeakDistance', RFminPeakDistance);
 RFPeakAbsorption = -RFPeakAbsorption;                                      % 反転したデータを元に戻す
 
@@ -399,7 +399,7 @@ disp('RF Peak Location [MHz]'); disp(RFPeakLocation/1e6);                  % 検
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '3.1 Noise masked RF Absorption.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_3.1.2 Peak Plotted Noise masked RF Absorption.emf']), 'emf');
 end
 
 %% 検出したRF吸収線のピーク間隔のうち、隣り合ったピーク間隔のみを自動で算出
@@ -420,13 +420,13 @@ disp(std_PeakDiff/1e6);                                                 % 標準
 
 %% 隣り合ったピーク間隔から光補間量を自動で算出
 % 4.1 設計した光補間量から隣り合った吸収線ピーク間隔の算出 (推定値)
-Est_PeakDiff = abs(OpRep * RFDiff / OpDiff_Est - RFRep);              % 推定値の大きさを「Est_PeakDiff」として保存
+modConv_PeakDiff = abs(OpRep * RFDiff / OpDiff_modConv - RFRep);              % 推定値の大きさを「modConv_PeakDiff」として保存
 
-% 4.2.1 隣り合ったRF吸収線ピーク間隔の平均値の算出
-Ave_PeakDiff = mean(PeakDiff1);                                       % 隣り合った吸収線ピーク間隔の平均値を「Ave_PeakDiff」として保存
+% 4.2.1 隣り合ったRF吸収線ピーク間隔の算出値の算出
+Prop_PeakDiff = mean(PeakDiff1);                                       % 隣り合った吸収線ピーク間隔の算出値を「Prop_PeakDiff」として保存
 
-% 4.2.2 RFピーク間隔の平均値を用いた光補間量の算出
-OpDiff_Ave = OpRep * RFDiff / (-Ave_PeakDiff +RFRep);                 % 平均値から算出した光補間量を「OpDiff_Ave」として保存
+% 4.2.2 RFピーク間隔の算出値を用いた光補間量の算出
+OpDiff_Prop = OpRep * RFDiff / (-Prop_PeakDiff +RFRep);                 % 算出値から算出した光補間量を「OpDiff_Prop」として保存
 
 toc;
 
@@ -435,30 +435,30 @@ toc;
 % 事前準備1: 配列の初期化・事前割り当て (これをするとデータ処理時間が格段に速くなる)
 n = 35;
 RF_Center = zeros(1,n); OP_Center = zeros(1,n);
-B_Est = zeros(1, n);    B_Ave = zeros(1, n);
+B_modConv = zeros(1, n);    B_Prop = zeros(1, n);
 RFX1 = cell(n, 1); RFX2 = cell(n, 1); 
 RFY1 = cell(1, n); RFY2 = cell(1, n); 
-OPX1_Est = cell(n, 1); OPX1_Ave = cell(n, 1); 
-OPX2_Est = cell(n, 1); OPX2_Ave = cell(n, 1); 
-cutOPX1_Est = cell(n, 1); cutOPX1_Ave = cell(n, 1);
-cutOPY1_Est = cell(1, n); cutOPY1_Ave = cell(1, n);
-cutOPX2_Est = cell(n, 1); cutOPX2_Ave = cell(n, 1);
-cutOPY2_Est = cell(1, n); cutOPY2_Ave = cell(1, n);
+OPX1_modConv = cell(n, 1); OPX1_Prop = cell(n, 1); 
+OPX2_modConv = cell(n, 1); OPX2_Prop = cell(n, 1); 
+cutOPX1_modConv = cell(n, 1); cutOPX1_Prop = cell(n, 1);
+cutOPY1_modConv = cell(1, n); cutOPY1_Prop = cell(1, n);
+cutOPX2_modConv = cell(n, 1); cutOPX2_Prop = cell(n, 1);
+cutOPY2_modConv = cell(1, n); cutOPY2_Prop = cell(1, n);
 
 
 % 事前準備2: 算出したそれぞれのピーク間隔より算出した光補間量による倍率算出 (光補間量/RF補間量)
-A_Est = OpDiff_Est / RFDiff;                         % 推定値の倍率の算出
-A_Ave = OpDiff_Ave / RFDiff;                         % 平均値を用いた倍率の算出
+A_modConv = OpDiff_modConv / RFDiff;                         % 波長計データから得られた推定値を用いた倍率の算出
+A_Prop = OpDiff_Prop / RFDiff;                         % 算出値を用いた倍率の算出
 
 %% 算出した倍率を用いて、RF領域から光領域へ自動で変換
 % 算出した倍率を用いてRF領域から光領域へ変換 ※スペクトル毎に変換式が異なるので注意
 for i = 1:n
     RFc = AOM + RFRep * (i - 18);                                                        % RFコムスペクトルの中心周波数を算出 (共通)
     RF_Center(i) = RFc;                                                                  % 各RFコムスペクトル中心周波数を「RF_Center」に格納
-    B_Est_temp = Fc + (OpRep * (i - 18)) - (A_Est * (AOM + RFRep * (i - 18)));           % オフセット周波数の算出 (推定値)
-    B_Est(i) = B_Est_temp;                                                               % 各RFコムスペクトルのオフセット周波数を「B_Est」に格納
-    B_Ave_temp = Fc + (OpRep * (i - 18)) - (A_Ave * (AOM + RFRep * (i - 18)));           % オフセット周波数の算出 (平均値)
-    B_Ave(i) = B_Ave_temp;                                                               % 各RFコムスペクトルのオフセット周波数を「B_Ave」に格納
+    B_modConv_temp = Fc + (OpRep * (i - 18)) - (A_modConv * (AOM + RFRep * (i - 18)));           % オフセット周波数の算出 (推定値)
+    B_modConv(i) = B_modConv_temp;                                                               % 各RFコムスペクトルのオフセット周波数を「B_modConv」に格納
+    B_Prop_temp = Fc + (OpRep * (i - 18)) - (A_Prop * (AOM + RFRep * (i - 18)));           % オフセット周波数の算出 (算出値)
+    B_Prop(i) = B_Prop_temp;                                                               % 各RFコムスペクトルのオフセット周波数を「B_Prop」に格納
 
     % 5.1 RFコムの切り取り範囲の設定 (共通)
     RFmin = -RFDiff / 2 + RFc;                                              % RFコムスペクトルの中心から切り取る範囲の最小値
@@ -475,14 +475,14 @@ for i = 1:n
     cutSmthCombB = SmthCombB(cut_RF);                                       % y軸のうち「cut」で指定した範囲を切り取り、「cutSmthCombB」として保存
     RFY2{i} = cutSmthCombB;                                                 % 「RFY2」に格納
     % 5.4 RF領域から光領域へ変換、結果を格納
-    OP1_Est = A_Est .* cutf1 + B_Est_temp;                                  % 光領域へ変換した参照光スペクトルの保存
-    OPX1_Est{i} = OP1_Est;                                                  % 「OPX1_Est」に格納
-    OP2_Est = A_Est .* cutf2 + B_Est_temp;                                  % 光領域へ変換した透過光スペクトルの保存
-    OPX2_Est{i} = OP2_Est;                                                  % 「OPX2_Est」に格納
-    OP1_Ave = A_Ave .* cutf1 + B_Ave_temp;                                  % 光領域へ変換した参照光スペクトルの保存
-    OPX1_Ave{i} = OP1_Ave;                                                  % 「OPX1_Est」に格納
-    OP2_Ave = A_Ave .* cutf2 + B_Ave_temp;                                  % 光領域へ変換した透過光スペクトルの保存
-    OPX2_Ave{i} = OP2_Ave;                                                  % 「OPX2_Est」に格納
+    OP1_modConv = A_modConv .* cutf1 + B_modConv_temp;                                  % 光領域へ変換した参照光スペクトルの保存
+    OPX1_modConv{i} = OP1_modConv;                                                  % 「OPX1_modConv」に格納
+    OP2_modConv = A_modConv .* cutf2 + B_modConv_temp;                                  % 光領域へ変換した透過光スペクトルの保存
+    OPX2_modConv{i} = OP2_modConv;                                                  % 「OPX2_modConv」に格納
+    OP1_Prop = A_Prop .* cutf1 + B_Prop_temp;                                  % 光領域へ変換した参照光スペクトルの保存
+    OPX1_Prop{i} = OP1_Prop;                                                  % 「OPX1_modConv」に格納
+    OP2_Prop = A_Prop .* cutf2 + B_Prop_temp;                                  % 光領域へ変換した透過光スペクトルの保存
+    OPX2_Prop{i} = OP2_Prop;                                                  % 「OPX2_modConv」に格納
     
     % 6.1 取得したEOコムスペクトルの中心周波数から光モード間隔分の切り取り
     OPFc = Fc + OpRep * (i - 18);                                   % EOコムスペクトルの中心周波数を算出
@@ -491,25 +491,25 @@ for i = 1:n
     OPmin = -OpRep / 2 + OPFc;                                      % EOコムスペクトルの中心から切り取る範囲の最小値
     OPmax = OpRep / 2 + OPFc;                                       % EOコムスペクトルの中心から切り取る範囲の最大値
         % 6.2.1 推定値
-        cutOP_Est = (OPmin <= OP1_Est) & (OP1_Est < OPmax);     % 推定値におけるEOコムスペクトルの切り取る範囲を「cutOP_Est」として保存
-        X1_Est = OP1_Est(cutOP_Est);                            % 切り取り後の参照光スペクトルのx軸の保存
-        cutOPX1_Est{i} = X1_Est;                                % 「cutOPX1_Est」に格納
-        Y1_Est = cutSmthCombA(cutOP_Est);                       % 切り取り後の参照光スペクトルのy軸の保存
-        cutOPY1_Est{i} = Y1_Est;                                % 「cutOPY1_Est」に格納
-        X2_Est = OP2_Est(cutOP_Est);                            % 切り取り後の透過光スペクトルのx軸の保存
-        cutOPX2_Est{i} = X2_Est;                                % 「cutOPX2_Est」に格納
-        Y2_Est = cutSmthCombB(cutOP_Est);                       % 切り取り後の透過光スペクトルのy軸の保存
-        cutOPY2_Est{i} = Y2_Est;                                % 「cutOPY2_Est」に格納
-        % 6.2.2 平均値
-        cutOP_Ave = (OPmin <= OP1_Ave) & (OP1_Ave < OPmax);     % 以下同様
-        X1_Ave = OP1_Ave(cutOP_Ave);
-        cutOPX1_Ave{i} = X1_Ave;
-        Y1_Ave = cutSmthCombA(cutOP_Ave);
-        cutOPY1_Ave{i} = Y1_Ave;
-        X2_Ave = OP2_Ave(cutOP_Ave);
-        cutOPX2_Ave{i} = X2_Ave;
-        Y2_Ave = cutSmthCombB(cutOP_Ave);
-        cutOPY2_Ave{i} = Y2_Ave;
+        cutOP_modConv = (OPmin <= OP1_modConv) & (OP1_modConv < OPmax);     % 推定値におけるEOコムスペクトルの切り取る範囲を「cutOP_modConv」として保存
+        X1_modConv = OP1_modConv(cutOP_modConv);                            % 切り取り後の参照光スペクトルのx軸の保存
+        cutOPX1_modConv{i} = X1_modConv;                                % 「cutOPX1_modConv」に格納
+        Y1_modConv = cutSmthCombA(cutOP_modConv);                       % 切り取り後の参照光スペクトルのy軸の保存
+        cutOPY1_modConv{i} = Y1_modConv;                                % 「cutOPY1_modConv」に格納
+        X2_modConv = OP2_modConv(cutOP_modConv);                            % 切り取り後の透過光スペクトルのx軸の保存
+        cutOPX2_modConv{i} = X2_modConv;                                % 「cutOPX2_modConv」に格納
+        Y2_modConv = cutSmthCombB(cutOP_modConv);                       % 切り取り後の透過光スペクトルのy軸の保存
+        cutOPY2_modConv{i} = Y2_modConv;                                % 「cutOPY2_modConv」に格納
+        % 6.2.2 算出値
+        cutOP_Prop = (OPmin <= OP1_Prop) & (OP1_Prop < OPmax);     % 以下同様
+        X1_Prop = OP1_Prop(cutOP_Prop);
+        cutOPX1_Prop{i} = X1_Prop;
+        Y1_Prop = cutSmthCombA(cutOP_Prop);
+        cutOPY1_Prop{i} = Y1_Prop;
+        X2_Prop = OP2_Prop(cutOP_Prop);
+        cutOPX2_Prop{i} = X2_Prop;
+        Y2_Prop = cutSmthCombB(cutOP_Prop);
+        cutOPY2_Prop{i} = Y2_Prop;
 end
 
 toc;
@@ -518,9 +518,9 @@ toc;
 % 7.1 切取前の光領域変換後のEOコムスペクトルの表示 (推定値)
 figure
 for i = 1:n
-plot(OPX2_Est{i}, RFY2{i}, 'g', 'LineWidth', 1);
+plot(OPX2_modConv{i}, RFY2{i}, 'g', 'LineWidth', 1);
 hold on
-plot(OPX1_Est{i}, RFY1{i}, 'r', 'LineWidth', 1);
+plot(OPX1_modConv{i}, RFY1{i}, 'r', 'LineWidth', 1);
 end
 xlabel('Frequency [THz]')                                     % x軸ラベル
 ylabel('Intensity [a.u.]')                                    % y軸ラベル
@@ -530,26 +530,26 @@ ax = gca;                                                     % 現在の座標�
 ax.XTick = 194.9e12:0.2e12:195.9e12;                          % 座標軸の取得範囲の設定 (始点:間隔:終点)
 ax.XTickLabel = string(ax.XTick/1e12);                        % THz表記に設定 (10^12 部分を削除)
 xlim([194.9e12 195.9e12])                                     % x軸の表示範囲の設定
-% title('Optically Transformed EO-Comb Spectrum of Estimated')  % グラフのタイトル
+% title('Optically Transformed EO-Comb Spectrum of Modified Conv. Method')  % グラフのタイトル
 legend('Transmitted Optical Spectrum','Referenced Optical Spectrum')    % 凡例
 fontsize(14,"points")                                         % フォントサイズの設定
 fontname("Times New Roman")                                   % フォント名の設定
 hold off
-disp('Est Peak Interval [MHz]'); disp(Est_PeakDiff/1e6);      % 推定値の表示
-disp('Optical Interpolation of Estimated [GHz]');
-disp(OpDiff_Est/1e9);                                         % 推定値の光補間量の表示
+disp('modConv Peak Interval [MHz]'); disp(modConv_PeakDiff/1e6);      % 推定値の表示
+disp('Optical Interpolation of Modified Conv. Method [GHz]');
+disp(OpDiff_modConv/1e9);                                         % 推定値の光補間量の表示
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '7.1 EO-Comb Spectrum of Estimated.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_7.1 EO-Comb Spectrum of Modified Conv. Method.emf']), 'emf');
 end
 
-% 7.2 切取前の光領域変換後のEOコムスペクトルの表示 (平均値)
+% 7.2 切取前の光領域変換後のEOコムスペクトルの表示 (算出値)
 figure
 for i = 1:n
-plot(OPX2_Ave{i}, RFY2{i}, 'g', 'LineWidth', 1);
+plot(OPX2_Prop{i}, RFY2{i}, 'g', 'LineWidth', 1);
 hold on
-plot(OPX1_Ave{i}, RFY1{i}, 'r', 'LineWidth', 1);
+plot(OPX1_Prop{i}, RFY1{i}, 'r', 'LineWidth', 1);
 end
 xlabel('Frequency [THz]')                                     % x軸ラベル
 ylabel('Intensity [a.u.]')                                    % y軸ラベル
@@ -559,18 +559,18 @@ ax = gca;                                                     % 現在の座標�
 ax.XTick = 194.9e12:0.2e12:195.9e12;                          % 座標軸の取得範囲の設定 (始点:間隔:終点)
 ax.XTickLabel = string(ax.XTick/1e12);                        % THz表記に設定 (10^12 部分を削除)
 xlim([194.9e12 195.9e12])                                     % x軸の表示範囲の設定
-% title('Optically Transformed EO-Comb Spectrum of Average')    % グラフのタイトル
+% title('Optically Transformed EO-Comb Spectrum of Proposed Method')    % グラフのタイトル
 legend('Transmitted Optical Spectrum','Referenced Optical Spectrum')    % 凡例
 fontsize(14,"points")                                         % フォントサイズの設定
 fontname("Times New Roman")                                   % フォント名の設定
 hold off
-disp('Ave Peak Interval [MHz]'); disp(Ave_PeakDiff/1e6);      % 平均値の表示
-disp('Optical Interpolation of Average [GHz]');
-disp(OpDiff_Ave/1e9);                                         % 平均値から算出した光補間量の表示
+disp('Prop. Peak Interval [MHz]'); disp(Prop_PeakDiff/1e6);      % 算出値の表示
+disp('Optical Interpolation of Proposed Method [GHz]');
+disp(OpDiff_Prop/1e9);                                         % 算出値から算出した光補間量の表示
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '7.2 EO-Comb Spectrum of Average.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_7.2 EO-Comb Spectrum of Proposed Method.emf']), 'emf');
 end
 
 
@@ -578,13 +578,13 @@ end
 % txt形式で各ピーク間隔と光補間量を記録、保存
 if Judge == 1
     % 保存するファイル名を作成 (%.6f: 小数点以下6桁の浮動小数点数を出力, \n: 改行)
-    txtFileName = fullfile(NewFolder, 'Results.txt');
+    txtFileName = fullfile(NewFolder, [Name, '_Results.txt']);
     fid = fopen(txtFileName, 'a');                                                % 書き込みで開く
     fprintf(fid, 'RF Peak Interval [MHz]: '); fprintf(fid, '%.6f ', PeakDiff2/1e6); fprintf(fid, '\n');
     fprintf(fid, 'S.D. RF Peak Interval: %.6f MHz \n\n', std_PeakDiff/1e6);
-    fprintf(fid, 'Estimated_Optical Peak Interval: %.6f MHz \n', Est_PeakDiff/1e6);
-    fprintf(fid, 'Average_Optical Peak Interval: %.6f MHz \n', Ave_PeakDiff/1e6);
-    fprintf(fid, 'Average_Optical Interpolation amount: %.6f GHz \n\n', OpDiff_Ave/1e9);
+    fprintf(fid, 'Modified Conv. Method_Optical Peak Interval: %.6f MHz \n', modConv_PeakDiff/1e6);
+    fprintf(fid, 'Proposed Method_Optical Peak Interval: %.6f MHz \n', Prop_PeakDiff/1e6);
+    fprintf(fid, 'Proposed Method_Optical Interpolation amount: %.6f GHz \n\n', OpDiff_Prop/1e9);
     fclose(fid);                                                                  % ファイルを閉じる
 end
 
@@ -616,10 +616,10 @@ Peak_HITRAN_Y = Peak_HITRAN_Y(idx);    % 除去後のHITRANのy軸に上書き
 % 8.1.1 切取後の光領域変換後のEOコムスペクトルの表示 (推定値)
 figure
 % Cell中のベクトルをすべて縦ベクトルに変換
-AX2_col = cellfun(@(v) v(:), cutOPX2_Est, 'UniformOutput', false);
-AY2_col = cellfun(@(v) v(:), cutOPY2_Est, 'UniformOutput', false);
-AX1_col = cellfun(@(v) v(:), cutOPX1_Est, 'UniformOutput', false);
-AY1_col = cellfun(@(v) v(:), cutOPY1_Est, 'UniformOutput', false);
+AX2_col = cellfun(@(v) v(:), cutOPX2_modConv, 'UniformOutput', false);
+AY2_col = cellfun(@(v) v(:), cutOPY2_modConv, 'UniformOutput', false);
+AX1_col = cellfun(@(v) v(:), cutOPX1_modConv, 'UniformOutput', false);
+AY1_col = cellfun(@(v) v(:), cutOPY1_modConv, 'UniformOutput', false);
 % 縦方向に連結し、1本のスペクトルの線にする
 AX2 = vertcat(AX2_col{:}); AY2 = vertcat(AY2_col{:});
 AX1 = vertcat(AX1_col{:}); AY1 = vertcat(AY1_col{:});
@@ -636,7 +636,7 @@ ax = gca;                                                     % 現在の座標�
 ax.XTick = 194.9e12:0.2e12:195.9e12;                          % 座標軸の取得範囲の設定 (始点:間隔:終点)
 ax.XTickLabel = string(ax.XTick/1e12);                        % THz表記に設定 (10^12 部分を削除)
 xlim([194.9e12 195.9e12])                                     % x軸の表示範囲の設定
-% title('After Cutting EO-Comb Spectrum of Estimated')          % グラフのタイトル
+% title('After Cutting EO-Comb Spectrum of Modified Conv. Method')          % グラフのタイトル
 legend('Transmitted Optical Spectrum','Referenced Optical Spectrum')    % 凡例
 fontsize(14,"points")                                         % フォントサイズの設定
 fontname("Times New Roman")                                   % フォント名の設定
@@ -645,13 +645,15 @@ hold off
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '8.1.1 Cutted EO-Comb Spectrum of Estimated.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_8.1.1 Cutted EO-Comb Spectrum of Modified Conv. Method.emf']), 'emf');
+    writetable(table(AX2(:), AY2(:)), fullfile(TxtFolder, [Name, '_CombB_modConv.txt']), 'Delimiter', '\t', 'WriteVariableNames', false);
+    writetable(table(AX1(:), AY1(:)), fullfile(TxtFolder, [Name, '_CombA_modConv.txt']), 'Delimiter', '\t', 'WriteVariableNames', false);
 end
 
 % 8.1.2 吸収線スペクトルの取得及び表示、HITRANとの比較 (推定値)
-Absorption_Est = AY2 ./ AY1;                                  % 透過率の算出
+Absorption_modConv = AY2 ./ AY1;                                  % 透過率の算出
 figure
-plot(AX1, Absorption_Est, 'r', 'LineWidth', 1);               % 測定結果の表示 (実線)
+plot(AX1, Absorption_modConv, 'r', 'LineWidth', 1);               % 測定結果の表示 (実線)
 hold on
 plot(HITRAN_X, HITRAN_Y, '--g', 'LineWidth', 1);              % HITRANの表示 (破線)
 
@@ -663,53 +665,53 @@ ax.XTickLabel = string(ax.XTick/1e12);                        % THz表記に設�
 xlim([194.9e12 195.9e12])                                     % x軸の表示範囲の設定
 ylim([0.4 1.4])                                               % y軸の表示範囲の設定
 yticks(0.4:0.2:1.4)                                           % y軸のメモリ設定
-% title('Optical Absorption of Estimated')                      % グラフのタイトル
-legend('Measurement of Average','HITRAN')                     % 凡例
+% title('Optical Absorption of Modified Conv. Method')                      % グラフのタイトル
+legend('Measurement of Proposed Method','HITRAN')                     % 凡例
 fontsize(14,"points")                                         % フォントサイズの設定
 fontname("Times New Roman")                                   % フォント名の設定
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '8.1.2 Optical Absorption of Estimated.emf'), 'emf');
-    writetable(table(AX1(:)/1e12, Absorption_Est(:), 'VariableNames', {'Frequency [THz]', 'Transmittance [a.u.]'}), fullfile(CsvFolder, 'OpticalAbsorption_Estimated.csv'));
+    saveas(gcf, fullfile(EmfFolder, [Name, '_8.1.2 Optical Absorption of Modified Conv. Method.emf']), 'emf');
+    writetable(table(AX1(:), Absorption_modConv(:)), fullfile(TxtFolder, [Name, '_OptAbsorption_modConv.txt']), 'Delimiter', '\t', 'WriteVariableNames', false);
 end
 
 %% ピーク位置の検出 (推定値)
 % 8.1.3 吸収線ピーク位置の検出、HITRANとの比較 (推定値)
-[PeakAbsorption_Est, PeakLocation_Est] = findpeaks(-Absorption_Est, AX1, 'MinPeakDistance', OPminPeakDistance);
-PeakAbsorption_Est = -PeakAbsorption_Est;                                   % 反転したデータを元に戻す
-idx = PeakAbsorption_Est < PeakJudge;                                      % 不要なピーク成分を除去 (設定した値未満のみをピークと判断し、インデックスを取得)
-PeakLocation_Est = PeakLocation_Est(idx);                                  % 除去後のx軸に上書き
-PeakAbsorption_Est = PeakAbsorption_Est(idx);                              % 除去後のy軸に上書き
+[PeakAbsorption_modConv, PeakLocation_modConv] = findpeaks(-Absorption_modConv, AX1, 'MinPeakDistance', OPminPeakDistance);
+PeakAbsorption_modConv = -PeakAbsorption_modConv;                                   % 反転したデータを元に戻す
+idx = PeakAbsorption_modConv < PeakJudge;                                      % 不要なピーク成分を除去 (設定した値未満のみをピークと判断し、インデックスを取得)
+PeakLocation_modConv = PeakLocation_modConv(idx);                                  % 除去後のx軸に上書き
+PeakAbsorption_modConv = PeakAbsorption_modConv(idx);                              % 除去後のy軸に上書き
 
 % HITRANとサイズが異なる場合に、サイズの小さい方に合わせる
-if length(Peak_HITRAN_X) ~= length(PeakLocation_Est)
-    MinLen = min(length(Peak_HITRAN_X), length(PeakLocation_Est));
+if length(Peak_HITRAN_X) ~= length(PeakLocation_modConv)
+    MinLen = min(length(Peak_HITRAN_X), length(PeakLocation_modConv));
     Peak_HITRAN_X = Peak_HITRAN_X(1:MinLen);
     Peak_HITRAN_Y = Peak_HITRAN_Y(1:MinLen);
-    PeakLocation_Est = PeakLocation_Est(1:MinLen);
-    PeakAbsorption_Est = PeakAbsorption_Est(1:MinLen);
+    PeakLocation_modConv = PeakLocation_modConv(1:MinLen);
+    PeakAbsorption_modConv = PeakAbsorption_modConv(1:MinLen);
 end
 
 plot(Peak_HITRAN_X, Peak_HITRAN_Y, 'bv', 'MarkerFaceColor', 'c');           % HITRANのピーク位置に谷(シアン)でプロット
-plot(PeakLocation_Est, PeakAbsorption_Est, 'bv', 'MarkerFaceColor', 'm');   % 最終的に検出した吸収線ピークを谷(マゼンタ)でプロット
-legend('Measurement of Estimated','HITRAN')                                 % 凡例
+plot(PeakLocation_modConv, PeakAbsorption_modConv, 'bv', 'MarkerFaceColor', 'm');   % 最終的に検出した吸収線ピークを谷(マゼンタ)でプロット
+legend('Measurement of Modified Conv. Method','HITRAN')                                 % 凡例
 
 hold off
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '8.1.3 Peak Plotted Optical Absorption of Estimated.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_8.1.3 Peak Plotted Optical Absorption of Modified Conv. Method.emf']), 'emf');
 end
 
-%% 平均値 (隣り合ったRF吸収線のピーク間隔の平均値)
-% 8.2.1 切取後の光領域変換後のEOコムスペクトルの表示 (平均値)
+%% 算出値 (隣り合ったRF吸収線のピーク間隔の算出値)
+% 8.2.1 切取後の光領域変換後のEOコムスペクトルの表示 (算出値)
 figure
 % Cell中のベクトルをすべて縦ベクトルに変換
-BX2_col = cellfun(@(v) v(:), cutOPX2_Ave, 'UniformOutput', false);
-BY2_col = cellfun(@(v) v(:), cutOPY2_Ave, 'UniformOutput', false);
-BX1_col = cellfun(@(v) v(:), cutOPX1_Ave, 'UniformOutput', false);
-BY1_col = cellfun(@(v) v(:), cutOPY1_Ave, 'UniformOutput', false);
+BX2_col = cellfun(@(v) v(:), cutOPX2_Prop, 'UniformOutput', false);
+BY2_col = cellfun(@(v) v(:), cutOPY2_Prop, 'UniformOutput', false);
+BX1_col = cellfun(@(v) v(:), cutOPX1_Prop, 'UniformOutput', false);
+BY1_col = cellfun(@(v) v(:), cutOPY1_Prop, 'UniformOutput', false);
 % 縦方向に連結し、1本のスペクトルの線にする
 BX2 = vertcat(BX2_col{:}); BY2 = vertcat(BY2_col{:});
 BX1 = vertcat(BX1_col{:}); BY1 = vertcat(BY1_col{:});
@@ -726,7 +728,7 @@ ax = gca;                                                     % 現在の座標�
 ax.XTick = 194.9e12:0.2e12:195.9e12;                          % 座標軸の取得範囲の設定 (始点:間隔:終点)
 ax.XTickLabel = string(ax.XTick/1e12);                        % THz表記に設定 (10^12 部分を削除)
 xlim([194.9e12 195.9e12])                                     % x軸の表示範囲の設定
-% title('After Cutting EO-Comb Spectrum of Average')            % グラフのタイトル
+% title('After Cutting EO-Comb Spectrum of Proposed Method')            % グラフのタイトル
 legend('Transmitted Optical Spectrum','Referenced Optical Spectrum')    % 凡例
 fontsize(14,"points")                                         % フォントサイズの設定
 fontname("Times New Roman")                                   % フォント名の設定
@@ -735,13 +737,15 @@ hold off
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '8.2.1 Cutted EO-Comb Spectrum of Average.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_8.2.1 Cutted EO-Comb Spectrum of Proposed Method.emf']), 'emf');
+    writetable(table(BX2(:), BY2(:)), fullfile(TxtFolder, [Name, '_CombB_Prop.txt']), 'Delimiter', '\t', 'WriteVariableNames', false);
+    writetable(table(BX1(:), BY1(:)), fullfile(TxtFolder, [Name, '_CombA_Prop.txt']), 'Delimiter', '\t', 'WriteVariableNames', false);
 end
 
-% 8.2.2 吸収線スペクトルの取得及び表示、HITRANとの比較 (平均値)
-Absorption_Ave = BY2 ./ BY1;                                  % 透過率の算出
+% 8.2.2 吸収線スペクトルの取得及び表示、HITRANとの比較 (算出値)
+Absorption_Prop = BY2 ./ BY1;                                  % 透過率の算出
 figure
-plot(BX1, Absorption_Ave, 'r', 'LineWidth', 1);               % 測定結果の表示 (実線)
+plot(BX1, Absorption_Prop, 'r', 'LineWidth', 1);               % 測定結果の表示 (実線)
 hold on
 plot(HITRAN_X, HITRAN_Y, '--g', 'LineWidth', 1);              % HITRANの表示 (破線)
 
@@ -753,72 +757,86 @@ ax.XTickLabel = string(ax.XTick/1e12);                        % THz表記に設�
 xlim([194.9e12 195.9e12])                                     % x軸の表示範囲の設定
 ylim([0.4 1.4])                                               % y軸の表示範囲の設定
 yticks(0.4:0.2:1.4)                                           % y軸のメモリ設定
-% title('Optical Absorption of Average')                        % グラフのタイトル
-legend('Measurement of Average','HITRAN')                     % 凡例
+% title('Optical Absorption of Proposed Method')                        % グラフのタイトル
+legend('Measurement of Proposed Method','HITRAN')                     % 凡例
 fontsize(14,"points")                                         % フォントサイズの設定
 fontname("Times New Roman")                                   % フォント名の設定
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '8.2.2 Optical Absorption of Average.emf'), 'emf');
-    writetable(table(BX1(:)/1e12, Absorption_Ave(:), 'VariableNames', {'Frequency [THz]', 'Transmittance [a.u.]'}), fullfile(CsvFolder, 'OpticalAbsorption_Average.csv'));
+    saveas(gcf, fullfile(EmfFolder, [Name, '_8.2.2 Optical Absorption of Proposed Method.emf']), 'emf');
+    writetable(table(BX1(:), Absorption_Prop(:)), fullfile(TxtFolder, [Name, '_OptAbsorption_Prop.txt']), 'Delimiter', '\t', 'WriteVariableNames', false);
 end
 
 mean(diff(BX1/1e6))
 
 
-%% ピーク位置の検出 (平均値)
-% 8.2.3 吸収線ピーク位置の検出、HITRANとの比較 (平均値)
-[PeakAbsorption_Ave, PeakLocation_Ave] = findpeaks(-Absorption_Ave, BX1, 'MinPeakDistance', OPminPeakDistance);
-PeakAbsorption_Ave = -PeakAbsorption_Ave;                                   % 反転したデータを元に戻す
-idx = PeakAbsorption_Ave < PeakJudge;                                      % 不要なピーク成分を除去 (設定した値未満のみをピークと判断し、インデックスを取得)
-PeakLocation_Ave = PeakLocation_Ave(idx);                                  % 除去後のx軸に上書き
-PeakAbsorption_Ave = PeakAbsorption_Ave(idx);                              % 除去後のy軸に上書き
+%% ピーク位置の検出 (算出値)
+% 8.2.3 吸収線ピーク位置の検出、HITRANとの比較 (算出値)
+[PeakAbsorption_Prop, PeakLocation_Prop] = findpeaks(-Absorption_Prop, BX1, 'MinPeakDistance', OPminPeakDistance);
+PeakAbsorption_Prop = -PeakAbsorption_Prop;                                   % 反転したデータを元に戻す
+idx = PeakAbsorption_Prop < PeakJudge;                                      % 不要なピーク成分を除去 (設定した値未満のみをピークと判断し、インデックスを取得)
+PeakLocation_Prop = PeakLocation_Prop(idx);                                  % 除去後のx軸に上書き
+PeakAbsorption_Prop = PeakAbsorption_Prop(idx);                              % 除去後のy軸に上書き
 
 % HITRANとサイズが異なる場合に、サイズの小さい方に合わせる
-if length(Peak_HITRAN_X) ~= length(PeakLocation_Ave)
-    MinLen = min(length(Peak_HITRAN_X), length(PeakLocation_Ave));
+if length(Peak_HITRAN_X) ~= length(PeakLocation_Prop)
+    MinLen = min(length(Peak_HITRAN_X), length(PeakLocation_Prop));
     Peak_HITRAN_X = Peak_HITRAN_X(1:MinLen);
     Peak_HITRAN_Y = Peak_HITRAN_Y(1:MinLen);
-    PeakLocation_Ave = PeakLocation_Ave(1:MinLen);
-    PeakAbsorption_Ave = PeakAbsorption_Ave(1:MinLen);
+    PeakLocation_Prop = PeakLocation_Prop(1:MinLen);
+    PeakAbsorption_Prop = PeakAbsorption_Prop(1:MinLen);
 end
 
 plot(Peak_HITRAN_X, Peak_HITRAN_Y, 'bv', 'MarkerFaceColor', 'c');           % HITRANのピーク位置に谷(シアン)でプロット
-plot(PeakLocation_Ave, PeakAbsorption_Ave, 'bv', 'MarkerFaceColor', 'm');   % 最終的に検出した吸収線ピークを谷(マゼンタ)でプロット
-legend('Measurement of Average','HITRAN')                                   % 凡例
+plot(PeakLocation_Prop, PeakAbsorption_Prop, 'bv', 'MarkerFaceColor', 'm');   % 最終的に検出した吸収線ピークを谷(マゼンタ)でプロット
+legend('Measurement of Proposed Method','HITRAN')                                   % 凡例
 
 hold off
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '8.2.3 Peak Plotted Optical Absorption of Average.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_8.2.3 Peak Plotted Optical Absorption of Proposed Method.emf']), 'emf');
 end
 
 toc;
 
 %% 吸収線スペクトルのスムージング処理 (必要であればコメント化解除して使用)
 % スムージング処理 (やり過ぎると分解能が下がるので注意)
-Absorption_Est = movmean(abs(Absorption_Est), smth); %/A_Est);
-Absorption_Ave = movmean(abs(Absorption_Ave), smth); %/A_Ave);
+% Absorption_modConv = movmean(abs(Absorption_modConv), smth); %/A_modConv);
+% Absorption_Prop = movmean(abs(Absorption_Prop), smth); %/A_Prop);
 
-toc;
+% toc;
 
 %% 取得データとHITRANのピーク間隔の差分の測定 / 比較・標準偏差の算出
 % HITRANと取得した吸収線ピーク位置の残差の算出及び表示
-PeakRes_HITRAN_AX = abs(Peak_HITRAN_X(1:end).' - PeakLocation_Est(1:end).');                    % HITRANと推定値とのピーク位置の差分の算出
-PeakRes_HITRAN_BX = abs(Peak_HITRAN_X(1:end).' - PeakLocation_Ave(1:end).');                    % HITRANと平均値とのピーク位置の差分の算出
-disp('Peak Residual Between HITRAN and Est [GHz]'); disp(PeakRes_HITRAN_AX/1e9);
-disp('Peak Residual Between HITRAN and Ave [GHz]'); disp(PeakRes_HITRAN_BX/1e9);
+PeakRes_HITRAN_AX = abs(Peak_HITRAN_X(1:end).' - PeakLocation_modConv(1:end).');                    % HITRANと推定値とのピーク位置の差分の算出
+PeakRes_HITRAN_BX = abs(Peak_HITRAN_X(1:end).' - PeakLocation_Prop(1:end).');                    % HITRANと算出値とのピーク位置の差分の算出
+disp('Peak Residual Between HITRAN and modConv. [GHz]'); disp(PeakRes_HITRAN_AX/1e9);
+disp('Peak Residual Between HITRAN and Prop. [GHz]'); disp(PeakRes_HITRAN_BX/1e9);
 
 % 標準偏差の算出及び表示 (ここ大事)
 PeakRes_HITRAN_AX_SD = std(PeakRes_HITRAN_AX);
 PeakRes_HITRAN_BX_SD = std(PeakRes_HITRAN_BX);
-disp('S.D. Peak Residual Between HITRAN and Est [GHz]'); disp(PeakRes_HITRAN_AX_SD/1e9);
-disp('S.D. Peak Residual Between HITRAN and Ave [GHz]'); disp(PeakRes_HITRAN_BX_SD/1e9);
+disp('S.D. Peak Residual Between HITRAN and modConv. [GHz]'); disp(PeakRes_HITRAN_AX_SD/1e9);
+disp('S.D. Peak Residual Between HITRAN and Prop. [GHz]'); disp(PeakRes_HITRAN_BX_SD/1e9);
 
 toc;
 
+%% 測定したピーク間隔の差分・標準偏差をtxtファイルに書き込み・保存
+% txt形式で各ピーク間隔の差分・標準偏差と算出値、標準偏差を記録、保存
+if Judge == 1
+    % 保存するファイル名を作成 (%.6f: 小数点以下6桁の浮動小数点数を出力, \n: 改行)
+    txtFileName = fullfile(NewFolder, [Name, '_Results.txt']);
+    fid = fopen(txtFileName, 'a');                                                % 書き込みで開く
+    fprintf(fid, 'Peak Residual Between HITRAN and Modified Conv. Method [GHz]: '); fprintf(fid, ' %.4f ', PeakRes_HITRAN_AX/1e9);
+    fprintf(fid, '\n');
+    fprintf(fid, 'Peak Residual Between HITRAN and Proposed Method [GHz]:       '); fprintf(fid, ' %.4f ', PeakRes_HITRAN_BX/1e9);
+    fprintf(fid, '\n\n');
+    fprintf(fid, 'S.D. Peak Residual Between HITRAN and Modified Conv. Method: %.6f GHz \n', PeakRes_HITRAN_AX_SD/1e9);
+    fprintf(fid, 'S.D. Peak Residual Between HITRAN and Proposed Method:       %.6f GHz \n', PeakRes_HITRAN_BX_SD/1e9);
+    fclose(fid);                                                                  % ファイルを閉じる
+end
 
 %% 吸収線スペクトルのベースライン補正
 %%% 参照光・透過光スペクトル強度の不均一さによって生じるベースラインの傾きを補正する
@@ -827,25 +845,25 @@ toc;
 PeakRange = 15e9;       % ±範囲
 
 % 配列の初期化・事前割り当て
-Basemask_Est = true(size(AX1));
-Basemask_Ave = true(size(BX1));
+Basemask_modConv = true(size(AX1));
+Basemask_Prop = true(size(BX1));
 
 %% 切り取る吸収線範囲を破線で表示
 %%% 推定値 (波長計で測定した光補間量)
 % 9.1 切り取る吸収線範囲を破線で表示 (推定値)
 figure
-plot(AX1, Absorption_Est, 'r', 'LineWidth', 1);               % 測定結果の表示 (実線)
+plot(AX1, Absorption_modConv, 'r', 'LineWidth', 1);               % 測定結果の表示 (実線)
 hold on
 
-for i = 1:length(PeakLocation_Est)
+for i = 1:length(PeakLocation_modConv)
     % マスクする吸収線の存在範囲を設定
-    PeakRangeStart_Est = PeakLocation_Est(i) - PeakRange / 2;
-    PeakRangeEnd_Est = PeakLocation_Est(i) + PeakRange / 2;
-    Basemask_Est = Basemask_Est & ((AX1 <= PeakRangeStart_Est) | (PeakRangeEnd_Est <= AX1));
+    PeakRangeStart_modConv = PeakLocation_modConv(i) - PeakRange / 2;
+    PeakRangeEnd_modConv = PeakLocation_modConv(i) + PeakRange / 2;
+    Basemask_modConv = Basemask_modConv & ((AX1 <= PeakRangeStart_modConv) | (PeakRangeEnd_modConv <= AX1));
 
     % 吸収線ピークの範囲をプロット
-    xline(PeakRangeStart_Est, 'g--', 'LineWidth', 0.5);       % 開始位置を赤い破線で表示
-    xline(PeakRangeEnd_Est, 'g--', 'LineWidth', 0.5);         % 終了位置を赤い破線で表示
+    xline(PeakRangeStart_modConv, 'g--', 'LineWidth', 0.5);       % 開始位置を赤い破線で表示
+    xline(PeakRangeEnd_modConv, 'g--', 'LineWidth', 0.5);         % 終了位置を赤い破線で表示
 end
 
 xlabel('Frequency [THz]')                                     % x軸ラベル
@@ -856,7 +874,7 @@ ax.XTickLabel = string(ax.XTick/1e12);                        % THz表記に設�
 xlim([194.9e12 195.9e12])                                     % x軸の表示範囲の設定
 ylim([0.9 1.2])                                               % y軸の表示範囲の設定
 yticks(0.9:0.1:1.2)                                           % y軸のメモリ設定
-% title('Mask Range of Estimated')                              % グラフのタイトル
+% title('Mask Range of Modified Conv. Method')                              % グラフのタイトル
 fontsize(14,"points")                                         % フォントサイズの設定
 fontname("Times New Roman")                                   % フォント名の設定
 
@@ -864,25 +882,25 @@ hold off
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '9.1 Mask Range of Estimated.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_9.1 Mask Range of Modified Conv. Method.emf']), 'emf');
 end
 
-%% 平均値 (隣り合ったRF吸収線のピーク間隔の平均値)
-% 9.2 切り取る吸収線範囲を破線で表示 (平均値)
+%% 算出値 (隣り合ったRF吸収線のピーク間隔の算出値)
+% 9.2 切り取る吸収線範囲を破線で表示 (算出値)
 figure
-plot(BX1, Absorption_Ave, 'r', 'LineWidth', 1);               % 測定結果の表示 (実線)
+plot(BX1, Absorption_Prop, 'r', 'LineWidth', 1);               % 測定結果の表示 (実線)
 hold on
 
-for i = 1:length(PeakLocation_Ave)
+for i = 1:length(PeakLocation_Prop)
     % マスクする吸収線の存在範囲を設定
-    PeakRangeStart_Ave = PeakLocation_Ave(i) - PeakRange / 2;
-    PeakRangeEnd_Ave = PeakLocation_Ave(i) + PeakRange / 2;
+    PeakRangeStart_Prop = PeakLocation_Prop(i) - PeakRange / 2;
+    PeakRangeEnd_Prop = PeakLocation_Prop(i) + PeakRange / 2;
 
-    Basemask_Ave = Basemask_Ave & ((BX1 <= PeakRangeStart_Ave) | (PeakRangeEnd_Ave <= BX1));
+    Basemask_Prop = Basemask_Prop & ((BX1 <= PeakRangeStart_Prop) | (PeakRangeEnd_Prop <= BX1));
 
     % 吸収線ピークの範囲をプロット
-    xline(PeakRangeStart_Ave, 'g--', 'LineWidth', 0.5);       % 開始位置を赤い破線で表示
-    xline(PeakRangeEnd_Ave, 'g--', 'LineWidth', 0.5);         % 終了位置を赤い破線で表示
+    xline(PeakRangeStart_Prop, 'g--', 'LineWidth', 0.5);       % 開始位置を赤い破線で表示
+    xline(PeakRangeEnd_Prop, 'g--', 'LineWidth', 0.5);         % 終了位置を赤い破線で表示
 end
 
 xlabel('Frequency [THz]')                                     % x軸ラベル
@@ -893,7 +911,7 @@ ax.XTickLabel = string(ax.XTick/1e12);                        % THz表記に設�
 xlim([194.9e12 195.9e12])                                     % x軸の表示範囲の設定
 ylim([0.9 1.2])                                               % y軸の表示範囲の設定
 yticks(0.9:0.1:1.2)                                           % y軸のメモリ設定
-% title('Mask Range of Average')                                % グラフのタイトル
+% title('Mask Range of Proposed Method')                                % グラフのタイトル
 fontsize(14,"points")                                         % フォントサイズの設定
 fontname("Times New Roman")                                   % フォント名の設定
 
@@ -901,15 +919,15 @@ hold off
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '9.2 Mask Range of Average.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_9.2 Mask Range of Proposed Method.emf']), 'emf');
 end
 
 %% 吸収線部分をマスクし、ベースラインのみを残す
 % ベースラインのみ保存
-Baseline_AX = AX1(Basemask_Est);
-Baseline_AY = Absorption_Est(Basemask_Est);
-Baseline_BX = BX1(Basemask_Ave);
-Baseline_BY = Absorption_Ave(Basemask_Ave);
+Baseline_AX = AX1(Basemask_modConv);
+Baseline_AY = Absorption_modConv(Basemask_modConv);
+Baseline_BX = BX1(Basemask_Prop);
+Baseline_BY = Absorption_Prop(Basemask_Prop);
 
 
 %% 曲線フィッターによる近似曲線生成シミュレーション
@@ -917,7 +935,7 @@ Baseline_BY = Absorption_Ave(Basemask_Ave);
 % curveFitter(Baseline_BX, Baseline_BY);
 
 %% ベースラインの正規化 (センタリングとスケーリングの実行)
-%%% センタリング：データの平均値を基準に「平均値からのズレ」としてデータを変換する処理 (平均値で減算)
+%%% センタリング：データの算出値を基準に「算出値からのズレ」としてデータを変換する処理 (算出値で減算)
 %%% スケーリング：データのばらつきを±１程度のズレに収める処理 (標準偏差で除算)
 %%% これらはNormalizeを"ON"にすることで実行可能
 % 正規化あり
@@ -939,7 +957,7 @@ Fit_BX1 = feval(fB1, BX1);
 %% 近似関数の保存 (任意の次数に対応)
 if Judge == 1
     % 保存するファイル名を作成 (%.6f: 小数点以下6桁の浮動小数点数を出力, \n: 改行)
-    txtFileName = fullfile(NewFolder, 'Results.txt');
+    txtFileName = fullfile(NewFolder, [Name, '_Results.txt']);
     fid = fopen(txtFileName, 'a');                                                % 書き込みで開く
     fprintf(fid, 'Approximate Polynomial Degree:  %d\n', n);
     fprintf(fid, 'Model: F(x) = p1*x^%d + p2*x^%d + ... + p%d*x + p%d\n', n, n-1, n, n+1);
@@ -952,9 +970,9 @@ if Judge == 1
     width = length(num2str(length(CoeffA)));        % 係数pの桁幅を記録
     
     % 近似関数の各係数をtxt形式で保存
-    fprintf(fid, '         Estimated       Average\n\n');
+    fprintf(fid, '         Modified Conv. Method    Prop. Method\n\n');
     for i = 1:length(CoeffA)
-        fprintf(fid, sprintf('p%%%dd =  %%10.6f %%15.6f\n', width), i, CoeffA(i), CoeffB(i));
+        fprintf(fid, sprintf('p%%%dd =  %%10.6f %%25.6f\n', width), i, CoeffA(i), CoeffB(i));
     end
     fprintf(fid, '\n');
 
@@ -991,8 +1009,8 @@ ax.XTickLabel = string(ax.XTick/1e12);                        % THz表記に設�
 xlim([194.9e12 195.9e12])                                     % x軸の表示範囲の設定
 ylim([0.9 1.2])                                               % y軸の表示範囲の設定
 yticks(0.9:0.1:1.2)                                           % y軸のメモリ設定
-% title('Baseline of Estimated')                                % グラフのタイトル
-legend('Baseline of Estimated','Polynomial Trendline')        % 凡例
+% title('Baseline of Modified Conv. Method')                                % グラフのタイトル
+legend('Baseline of Modified Conv. Method','Polynomial Trendline')        % 凡例
 fontsize(14,"points")                                         % フォントサイズの設定
 fontname("Times New Roman")                                   % フォント名の設定
 
@@ -1000,11 +1018,11 @@ hold off
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '10.1 Baseline of Estimated.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_10.1 Baseline of Modified Conv. Method.emf']), 'emf');
 end
 
-%% 平均値 (隣り合ったRF吸収線のピーク間隔の平均値)
-% 10.2 結果の表示 (平均値)
+%% 算出値 (隣り合ったRF吸収線のピーク間隔の算出値)
+% 10.2 結果の表示 (算出値)
 figure
 plot(Baseline_BX, Baseline_BY, '.r', 'LineWidth', 1);          % 測定結果の表示 (赤点線)
 hold on
@@ -1020,8 +1038,8 @@ ax.XTickLabel = string(ax.XTick/1e12);                        % THz表記に設�
 xlim([194.9e12 195.9e12])                                     % x軸の表示範囲の設定
 ylim([0.9 1.2])                                               % y軸の表示範囲の設定
 yticks(0.9:0.1:1.2)                                           % y軸のメモリ設定
-% title('Baseline of Average')                                  % グラフのタイトル
-legend('Baseline of Average','Polynomial Trendline')          % 凡例
+% title('Baseline of Proposed Method')                                  % グラフのタイトル
+legend('Baseline of Proposed Method','Polynomial Trendline')          % 凡例
 fontsize(14,"points")                                         % フォントサイズの設定
 fontname("Times New Roman")                                   % フォント名の設定
 
@@ -1029,7 +1047,7 @@ hold off
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '10.2 Baseline of Average.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_10.2 Baseline of Proposed Method.emf']), 'emf');
 end
 
 toc;
@@ -1037,13 +1055,13 @@ toc;
 
 %% 算出した近似曲線の除算による吸収線スペクトルのベースライン補正
 % 近似曲線で除算・ベースライン補正の実行
-Div_Absorption_Est = Absorption_Est ./ Fit_AX1;
-Div_Absorption_Ave = Absorption_Ave ./ Fit_BX1;
+Div_Absorption_modConv = Absorption_modConv ./ Fit_AX1;
+Div_Absorption_Prop = Absorption_Prop ./ Fit_BX1;
 
 %% 推定値 (波長計で測定した光補間量)
 % 11.1.1 除算後の吸収線スペクトル (推定値)
 figure
-plot(AX1, Div_Absorption_Est, 'r', 'LineWidth', 1);
+plot(AX1, Div_Absorption_modConv, 'r', 'LineWidth', 1);
 hold on
 plot(HITRAN_X, HITRAN_Y, '--g', 'LineWidth', 1);              % HITRANの表示 (破線)
 
@@ -1055,48 +1073,48 @@ ax.XTickLabel = string(ax.XTick/1e12);                        % THz表記に設�
 xlim([194.9e12 195.9e12])                                     % x軸の表示範囲の設定
 ylim([0.4 1.4])                                               % y軸の表示範囲の設定
 yticks(0.4:0.2:1.4)                                           % y軸のメモリ設定
-% title('Baseline Corrected Optical Absorption of Estimated')   % グラフのタイトル
-legend('Corrected Measurement of Estimated','HITRAN')         % 凡例
+% title('Baseline Corrected Optical Absorption of Modified Conv. Method')   % グラフのタイトル
+legend('Corrected Measurement of Modified Conv. Method','HITRAN')         % 凡例
 fontsize(14,"points")                                         % フォントサイズの設定
 fontname("Times New Roman")                                   % フォント名の設定
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '11.1.1 Baseline Corrected Optical Absorption of Estimated.emf'), 'emf');
-    writetable(table(AX1(:)/1e12, Div_Absorption_Est(:), 'VariableNames', {'Frequency [THz]', 'Transmittance [a.u.]'}), fullfile(CsvFolder, 'BaselineCorrectedOpticalAbsorption_Estimated.csv'));
+    saveas(gcf, fullfile(EmfFolder, [Name, '_11.1.1 Baseline Corrected Optical Absorption of Modified Conv. Method.emf']), 'emf');
+    writetable(table(AX1(:), Div_Absorption_modConv(:)), fullfile(TxtFolder, [Name, '_BaseCorrAbsorption_modConv.txt']), 'Delimiter', '\t', 'WriteVariableNames', false);
 end
 
 % 11.1.2 吸収線ピーク位置の検出、HITRANとの比較 (推定値)
-[DivPeakAbsorption_Est, DivPeakLocation_Est] = findpeaks(-Div_Absorption_Est, AX1, 'MinPeakDistance', OPminPeakDistance);
-DivPeakAbsorption_Est = -DivPeakAbsorption_Est;                                   % 反転したデータを元に戻す
-idx = DivPeakAbsorption_Est < PeakJudge;                                         % 不要なピーク成分を除去 (設定した値未満のみをピークと判断し、インデックスを取得)
-DivPeakLocation_Est = DivPeakLocation_Est(idx);                                  % 除去後のx軸に上書き
-DivPeakAbsorption_Est = DivPeakAbsorption_Est(idx);                              % 除去後のy軸に上書き
+[DivPeakAbsorption_modConv, DivPeakLocation_modConv] = findpeaks(-Div_Absorption_modConv, AX1, 'MinPeakDistance', OPminPeakDistance);
+DivPeakAbsorption_modConv = -DivPeakAbsorption_modConv;                                   % 反転したデータを元に戻す
+idx = DivPeakAbsorption_modConv < PeakJudge;                                         % 不要なピーク成分を除去 (設定した値未満のみをピークと判断し、インデックスを取得)
+DivPeakLocation_modConv = DivPeakLocation_modConv(idx);                                  % 除去後のx軸に上書き
+DivPeakAbsorption_modConv = DivPeakAbsorption_modConv(idx);                              % 除去後のy軸に上書き
 
 % HITRANとサイズが異なる場合に、サイズの小さい方に合わせる
-if length(Peak_HITRAN_X) ~= length(DivPeakLocation_Est)
-    MinLen = min(length(Peak_HITRAN_X), length(DivPeakLocation_Est));
+if length(Peak_HITRAN_X) ~= length(DivPeakLocation_modConv)
+    MinLen = min(length(Peak_HITRAN_X), length(DivPeakLocation_modConv));
     Peak_HITRAN_X = Peak_HITRAN_X(1:MinLen);
     Peak_HITRAN_Y = Peak_HITRAN_Y(1:MinLen);
-    DivPeakLocation_Est = DivPeakLocation_Est(1:MinLen);
-    DivPeakAbsorption_Est = DivPeakAbsorption_Est(1:MinLen);
+    DivPeakLocation_modConv = DivPeakLocation_modConv(1:MinLen);
+    DivPeakAbsorption_modConv = DivPeakAbsorption_modConv(1:MinLen);
 end
 
 plot(Peak_HITRAN_X, Peak_HITRAN_Y, 'bv', 'MarkerFaceColor', 'c');                 % HITRANのピーク位置に谷(シアン)でプロット
-plot(DivPeakLocation_Est, DivPeakAbsorption_Est, 'bv', 'MarkerFaceColor', 'm');   % 最終的に検出した吸収線ピークを谷(マゼンタ)でプロット
-legend('Corrected Measurement of Estimated','HITRAN')         % 凡例
+plot(DivPeakLocation_modConv, DivPeakAbsorption_modConv, 'bv', 'MarkerFaceColor', 'm');   % 最終的に検出した吸収線ピークを谷(マゼンタ)でプロット
+legend('Corrected Measurement of Modified Conv. Method','HITRAN')         % 凡例
 
 hold off
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '11.1.2 Peak Plotted Baseline Corrected Optical Absorption of Estimated.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_11.1.2 Peak Plotted Baseline Corrected Optical Absorption of Modified Conv. Method.emf']), 'emf');
 end
 
-%% 平均値 (隣り合ったRF吸収線のピーク間隔の平均値)
-%11.2.1 除算後の吸収線スペクトル (平均値)
+%% 算出値 (隣り合ったRF吸収線のピーク間隔の算出値)
+%11.2.1 除算後の吸収線スペクトル (算出値)
 figure
-plot(BX1, Div_Absorption_Ave, 'r', 'LineWidth', 1);
+plot(BX1, Div_Absorption_Prop, 'r', 'LineWidth', 1);
 hold on
 plot(HITRAN_X, HITRAN_Y, '--g', 'LineWidth', 1);              % HITRANの表示 (破線)
 
@@ -1108,42 +1126,42 @@ ax.XTickLabel = string(ax.XTick/1e12);                        % THz表記に設�
 xlim([194.9e12 195.9e12])                                     % x軸の表示範囲の設定
 ylim([0.4 1.4])                                               % y軸の表示範囲の設定
 yticks(0.4:0.2:1.4)                                           % y軸のメモリ設定
-% title('Baseline Corrected Optical Absorption of Average')     % グラフのタイトル
-legend('Corrected Measurement of Average','HITRAN')           % 凡例
+% title('Baseline Corrected Optical Absorption of Proposed Method')     % グラフのタイトル
+legend('Corrected Measurement of Proposed Method','HITRAN')           % 凡例
 fontsize(14,"points")                                         % フォントサイズの設定
 fontname("Times New Roman")                                   % フォント名の設定
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '11.2.1 Baseline Corrected Optical Absorption of Average.emf'), 'emf');
-    writetable(table(BX1(:)/1e12, Div_Absorption_Ave(:), 'VariableNames', {'Frequency [THz]', 'Transmittance [a.u.]'}), fullfile(CsvFolder, 'BaselineCorrectedOpticalAbsorption_Average.csv'));
+    saveas(gcf, fullfile(EmfFolder, [Name, '_11.2.1 Baseline Corrected Optical Absorption of Proposed Method.emf']), 'emf');
+    writetable(table(BX1(:), Div_Absorption_Prop(:)), fullfile(TxtFolder, [Name, '_BaseCorrAbsorption_Prop.txt']), 'Delimiter', '\t', 'WriteVariableNames', false);
 end
 
-% 11.2.2 吸収線ピーク位置の検出、HITRANとの比較 (平均値)
-[DivPeakAbsorption_Ave, DivPeakLocation_Ave] = findpeaks(-Div_Absorption_Ave, BX1, 'MinPeakDistance', OPminPeakDistance);
-DivPeakAbsorption_Ave = -DivPeakAbsorption_Ave;                                   % 反転したデータを元に戻す
-idx = DivPeakAbsorption_Ave < PeakJudge;                                         % 不要なピーク成分を除去 (設定した値未満のみをピークと判断し、インデックスを取得)
-DivPeakLocation_Ave = DivPeakLocation_Ave(idx);                                  % 除去後のx軸に上書き
-DivPeakAbsorption_Ave = DivPeakAbsorption_Ave(idx);                              % 除去後のy軸に上書き
+% 11.2.2 吸収線ピーク位置の検出、HITRANとの比較 (算出値)
+[DivPeakAbsorption_Prop, DivPeakLocation_Prop] = findpeaks(-Div_Absorption_Prop, BX1, 'MinPeakDistance', OPminPeakDistance);
+DivPeakAbsorption_Prop = -DivPeakAbsorption_Prop;                                   % 反転したデータを元に戻す
+idx = DivPeakAbsorption_Prop < PeakJudge;                                         % 不要なピーク成分を除去 (設定した値未満のみをピークと判断し、インデックスを取得)
+DivPeakLocation_Prop = DivPeakLocation_Prop(idx);                                  % 除去後のx軸に上書き
+DivPeakAbsorption_Prop = DivPeakAbsorption_Prop(idx);                              % 除去後のy軸に上書き
 
 % HITRANとサイズが異なる場合に、サイズの小さい方に合わせる
-if length(Peak_HITRAN_X) ~= length(DivPeakLocation_Ave)
-    MinLen = min(length(Peak_HITRAN_X), length(DivPeakLocation_Ave));
+if length(Peak_HITRAN_X) ~= length(DivPeakLocation_Prop)
+    MinLen = min(length(Peak_HITRAN_X), length(DivPeakLocation_Prop));
     Peak_HITRAN_X = Peak_HITRAN_X(1:MinLen);
     Peak_HITRAN_Y = Peak_HITRAN_Y(1:MinLen);
-    DivPeakLocation_Ave = DivPeakLocation_Ave(1:MinLen);
-    DivPeakAbsorption_Ave = DivPeakAbsorption_Ave(1:MinLen);
+    DivPeakLocation_Prop = DivPeakLocation_Prop(1:MinLen);
+    DivPeakAbsorption_Prop = DivPeakAbsorption_Prop(1:MinLen);
 end
 
 plot(Peak_HITRAN_X, Peak_HITRAN_Y, 'bv', 'MarkerFaceColor', 'c');                 % HITRANのピーク位置に谷(シアン)でプロット
-plot(DivPeakLocation_Ave, DivPeakAbsorption_Ave, 'bv', 'MarkerFaceColor', 'm');   % 最終的に検出した吸収線ピークを谷(マゼンタ)でプロット
-legend('Corrected Measurement of Average','HITRAN')           % 凡例
+plot(DivPeakLocation_Prop, DivPeakAbsorption_Prop, 'bv', 'MarkerFaceColor', 'm');   % 最終的に検出した吸収線ピークを谷(マゼンタ)でプロット
+legend('Corrected Measurement of Proposed Method','HITRAN')           % 凡例
 
 hold off
 
 % グラフの保存 (emf形式)
 if Judge == 1
-    saveas(gcf, fullfile(EmfFolder, '11.2.2 Peak Plotted Baseline Corrected Optical Absorption of Average.emf'), 'emf');
+    saveas(gcf, fullfile(EmfFolder, [Name, '_11.2.2 Peak Plotted Baseline Corrected Optical Absorption of Proposed Method.emf']), 'emf');
 end
 
 toc;
@@ -1151,30 +1169,30 @@ toc;
 
 %% ベースライン補正後の取得データとHITRANのピーク間隔の差分の測定 / 比較・標準偏差の算出
 % HITRANとベースライン補正後の吸収線ピーク位置の残差の算出及び表示
-DivPeakRes_HITRAN_AX = Peak_HITRAN_X(1:end).' - DivPeakLocation_Est(1:end).';                    % HITRANと推定値とのピーク位置の差分の算出
-DivPeakRes_HITRAN_BX = Peak_HITRAN_X(1:end).' - DivPeakLocation_Ave(1:end).';                    % HITRANと平均値とのピーク位置の差分の算出
-disp('Corrected Peak Residual Between HITRAN and Est [GHz]'); disp(DivPeakRes_HITRAN_AX/1e9);
-disp('Corrected Peak Residual Between HITRAN and Ave [GHz]'); disp(DivPeakRes_HITRAN_BX/1e9);
+DivPeakRes_HITRAN_AX = Peak_HITRAN_X(1:end).' - DivPeakLocation_modConv(1:end).';                    % HITRANと推定値とのピーク位置の差分の算出
+DivPeakRes_HITRAN_BX = Peak_HITRAN_X(1:end).' - DivPeakLocation_Prop(1:end).';                    % HITRANと算出値とのピーク位置の差分の算出
+disp('Corrected Peak Residual Between HITRAN and modConv [GHz]'); disp(DivPeakRes_HITRAN_AX/1e9);
+disp('Corrected Peak Residual Between HITRAN and Prop. [GHz]'); disp(DivPeakRes_HITRAN_BX/1e9);
 
 % 標準偏差の算出及び表示
 DivPeakRes_HITRAN_AX_SD = std(abs(DivPeakRes_HITRAN_AX));
 DivPeakRes_HITRAN_BX_SD = std(abs(DivPeakRes_HITRAN_BX));
-disp('S.D. Corrected Peak Residual Between HITRAN and Est [GHz]'); disp(DivPeakRes_HITRAN_AX_SD/1e9);
-disp('S.D. Corrected Peak Residual Between HITRAN and Ave [GHz]'); disp(DivPeakRes_HITRAN_BX_SD/1e9);
+disp('S.D. Corrected Peak Residual Between HITRAN and modConv [GHz]'); disp(DivPeakRes_HITRAN_AX_SD/1e9);
+disp('S.D. Corrected Peak Residual Between HITRAN and Prop. [GHz]'); disp(DivPeakRes_HITRAN_BX_SD/1e9);
 
 %% 測定したピーク間隔の差分・標準偏差をtxtファイルに書き込み・保存
-% txt形式で各ピーク間隔の差分・標準偏差と平均値、標準偏差を記録、保存
+% txt形式で各ピーク間隔の差分・標準偏差と算出値、標準偏差を記録、保存
 if Judge == 1
     % 保存するファイル名を作成 (%.6f: 小数点以下6桁の浮動小数点数を出力, \n: 改行)
-    txtFileName = fullfile(NewFolder, 'Results.txt');
+    txtFileName = fullfile(NewFolder, [Name, '_Results.txt']);
     fid = fopen(txtFileName, 'a');                                                % 書き込みで開く
     fprintf(fid, 'PeakJudge: %.2f \n', PeakJudge);
-    fprintf(fid, 'Corrected Peak Residual Between HITRAN and Estimated [GHz]: '); fprintf(fid, ' %.4f ', DivPeakRes_HITRAN_AX/1e9);
+    fprintf(fid, 'Corrected Peak Residual Between HITRAN and Modified Conv. Method [GHz]: '); fprintf(fid, ' %.4f ', DivPeakRes_HITRAN_AX/1e9);
     fprintf(fid, '\n');
-    fprintf(fid, 'Corrected Peak Residual Between HITRAN and Average [GHz]:   '); fprintf(fid, ' %.4f ', DivPeakRes_HITRAN_BX/1e9);
+    fprintf(fid, 'Corrected Peak Residual Between HITRAN and Proposed Method [GHz]:       '); fprintf(fid, ' %.4f ', DivPeakRes_HITRAN_BX/1e9);
     fprintf(fid, '\n\n');
-    fprintf(fid, 'S.D. Corrected Peak Residual Between HITRAN and Estimated: %.6f GHz \n', DivPeakRes_HITRAN_AX_SD/1e9);
-    fprintf(fid, 'S.D. Corrected Peak Residual Between HITRAN and Average:   %.6f GHz \n', DivPeakRes_HITRAN_BX_SD/1e9);
+    fprintf(fid, 'S.D. Corrected Peak Residual Between HITRAN and Modified Conv. Method: %.6f GHz \n', DivPeakRes_HITRAN_AX_SD/1e9);
+    fprintf(fid, 'S.D. Corrected Peak Residual Between HITRAN and Proposed Method:       %.6f GHz \n', DivPeakRes_HITRAN_BX_SD/1e9);
     fclose(fid);                                                                  % ファイルを閉じる
 end
 
