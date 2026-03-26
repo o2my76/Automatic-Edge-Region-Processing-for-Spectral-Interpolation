@@ -46,7 +46,7 @@ wavelengthFolder = fullfile(wavelengthtxtFolder, Name + ".txt");
 Tdata = readtable(wavelengthFolder);
 
 Tdata_Time = Tdata{:, 1} / 1e3;                 % 波長計取得データの時間軸の取得 [s]
-wavelength = Tdata{:, 3} / 1e9;                 % 波長計取得データの中心波長の取得 [nm]
+wavelength = Tdata{:, 2} / 1e9;                 % 波長計取得データの中心波長の取得 [nm]
 
 % 波長計で取得した時間から中心波長及び光補間量の推定値を測定
 TimeRange = (AcquisitionTime <= Tdata_Time) & (Tdata_Time <= AcquisitionTime + 1);     % 取得する範囲の設定
