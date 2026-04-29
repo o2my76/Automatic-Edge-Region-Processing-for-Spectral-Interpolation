@@ -9,28 +9,32 @@ tic
 RFDiff = 0.30e6;                             % RF補間量 [Hz] (RFモード間隔より小さく設定)
 AOM = 80e6;                                  % RF中心周波数 [Hz]
 OpRep = 25e9;                                % 光モード間隔 (繰り返し周波数 [Hz])
-RFRep = 0.35e6;                              % RFモード間隔
+RFRep = 0.35e6;                              % RFモード間隔 [Hz]
+
+% Waveform Generator の CH2のバースト位相と変調波の種類の設定
+BurstPhase = 120;                            % バースト位相 [°] (90°以上で設定)
+mode = 2;                                    % 変調波の種類 (三角波: 1, 正弦波: 2 を入力)
 
 % 実行するフォルダ名を入力、データ保存の有無決定
-Name = 'my42';                               % 読み込むBinファイルが入ったフォルダ名を入力
-Judge = 0;                                   % データ保存の有無 (Yes: 1, No: 1以外の数値 を入力)
+Name = 'my53';                               % 読み込むBinファイルが入ったフォルダ名を入力
+Judge = 1;                                   % データ保存の有無 (Yes: 1, No: 1以外の数値 を入力)
 
 % 波長計で取得した時間を入力 [s] (適宜変更すること)
-AcquisitionMin = 5;                          % データ取得時間 [分]
-AcquisitionSec = 7;                         % データ取得時間 [秒]
+AcquisitionMin = 13;                          % データ取得時間 [分]
+AcquisitionSec = 28;                         % データ取得時間 [秒]
 
 AcquisitionTime = 60 * AcquisitionMin + AcquisitionSec;
 
 % 検出する吸収線ピーク値の閾値 (設定した値未満をピーク値とみなす)
-PeakJudge = 0.9;
+PeakJudge = 0.95;
 
 % x軸の生成 (自己研究と合致しているか確認すること)
-N = 2^24;                                    % サンプル数 [S]
+N = 2^25;                                    % サンプル数 [S]
 Fs = 200e6;                                  % サンプリングレート [S/s] 
 t = (0:N-1) / Fs;                            % 時間軸の生成
 
 disp('Measurement time [ms]'); disp(N/Fs*1e3);    % 測定時間の表示
-CH2_Freq = Fs / (N * 1.5);                   % 三角波周波数 (データ取得時間範囲から左右それぞれ +30° 空けているので1.5を掛ける)
+CH2_Freq = Fs / (N * 180 / (180 - (BurstPhase - 90) * 2));                   % 三角波周波数
 
 %% HITRANデータの読み込み
 % HITRANデータファイルの指定
@@ -88,7 +92,14 @@ disp('Center Frequency [THz]'); disp(Fc/1e12);                                  
 % 中心波長の最大値と最小値から光補間量の推定値の算出
 OpDiff_Max = 299792458 / mean(Max_wavelength);                                     % 波長の最大値の平均から光周波数に変換
 OpDiff_Min = 299792458 / mean(Min_wavelength);                                     % 波長の最小値の平均から光周波数に変換
-OpDiff_modConv = (OpDiff_Min - OpDiff_Max) / 1.5;                                      % 光補間量の算出 (推定値)
+
+% 光補間量の算出 (推定値) (mode 1:三角波, mode 2:正弦波)
+if mode == 1
+    OpDiff_modConv = (OpDiff_Min - OpDiff_Max) / (180 / (180 - (BurstPhase - 90) * 2));  
+end
+if mode == 2
+     OpDiff_modConv = (OpDiff_Min - OpDiff_Max) * sin(2 * (BurstPhase - 90) * pi / 180);
+end
 disp('Optical Interpolation Amount [GHz]'); disp(OpDiff_modConv/1e9);                  % 光補間量を表示
 
 
