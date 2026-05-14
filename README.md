@@ -22,7 +22,7 @@ MathWorks社が提供するMATLABを用いて, データ処理からグラフ表
 学士論文は[こちら](https://github.com/tdu-my/Automatic-Edge-Region-Processing-for-Spectral-Interpolation/blob/main/2024%20Bachelor's%20thesis_Yuma%20Mitsuoka.pdf)
 
 ## プログラムのダウンロード
-[プログラム（最新版）](https://github.com/o2my76/AutoInterpolate/blob/main/Spectralinterpolation.m)
+[プログラム（最新版）]([https://github.com/o2my76/AutoInterpolate/blob/main/Spectralinterpolation.m](https://raw.githubusercontent.com/o2my76/AutoInterpolate/main/Spectralinterpolation.m))
 
 ## プログラムに必要なもの
 ### 1. MATLAB
