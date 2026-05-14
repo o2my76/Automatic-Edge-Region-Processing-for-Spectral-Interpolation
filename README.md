@@ -5,8 +5,11 @@ Mail: 25kmh28@ms.dendai.ac.jp (学校用) / yuma.0706.1510111@outlook.jp (個人
 
 ## 目次
 1. [内容](#内容)
-2. [プログラムに必要なもの](#プログラムに必要なもの) 
-3. [HITRANによる混合ガスの透過率スペクトル取得方法について](#HITRANによる混合ガスの透過率スペクトル取得方法について)
+2. [プログラムのダウンロード](#プログラムのダウンロード)
+3. [プログラムに必要なもの](#プログラムに必要なもの)
+4. [データ処理プログラムの解説](#データ処理プログラムの解説)
+5. [付録](#付録) <br>
+   5.1 [HITRANによる混合ガスの透過率スペクトル取得方法について](#HITRANによる混合ガスの透過率スペクトル取得方法について)
 
 ## 内容
 MathWorks社が提供するMATLABを用いて, データ処理からグラフ表示までを一括して行うプログラムを生成します.
@@ -18,6 +21,9 @@ MathWorks社が提供するMATLABを用いて, データ処理からグラフ表
 
 学士論文は[こちら](https://github.com/tdu-my/Automatic-Edge-Region-Processing-for-Spectral-Interpolation/blob/main/2024%20Bachelor's%20thesis_Yuma%20Mitsuoka.pdf)
 
+## プログラムのダウンロード
+[プログラム（最新版）]
+
 ## プログラムに必要なもの
 ### 1. MATLAB
 MATLABをインストールしてください.
@@ -28,9 +34,10 @@ MATLABをインストールしてください.
 
 ### 2. 使用する MATLAB Toolbox
 下記の Toolbox のインストールが必要です.
-
-  - Signal Processing Toolbox
-  - Curve Fitting Toolbox
+| アイコン | Toolbox | 使用用途 |
+| --- | --- | --- |
+| <img width="199" height="142" alt="image" src="https://github.com/user-attachments/assets/963ec24e-512e-4074-82f4-cc21ae08d081" /> | Signal Processing Toolbox | 信号処理用の Toolbox です. 均一 / 不均一 にサンプリングされた信号の管理・解析・前処理・特徴抽出を行うことができます. |
+| <img width="203" height="143" alt="image" src="https://github.com/user-attachments/assets/f5469b4d-a800-47ed-9cd6-1c733b6cee77" /> | Curve Fitting Toolbox | 測定データに対して曲線や曲面を当てはめるための Toolbox です. 本研究では, 測定データへの関数によるフィッティングのために使用しています. |
 
 MATLAB インストール時にまとめて追加できます. インストール済みの場合は「ホーム > アドオン」から検索し、インストールしてください.
 
@@ -50,18 +57,18 @@ Visual Studio Code のダウンロードリンクは[こちら](https://code.vis
 
 ### 5. 使用する VSCode 拡張機能
 VSCode には様々な拡張機能がありますが, ここでは必須の拡張機能に加え, 便利な拡張機能を紹介します.
-  - **MATLAB (必須)**
-  - **Japanese Language Pack for Visual Studio Code** <br>
-　VSCode はデフォルトの表示言語が英語になっているため, 表示言語を日本語にすることができます.
-  - **GitLens** <br>
-  　VSCode 上でソースコードのコミット履歴等を確認することができる強力ツールです.
-  - **Indent Rainbow** <br>
-  　VSCode でコードのインデントを色分けして表示してくれるツールです.
-  - **Identicator** <br>
-  　現在カーソルがあるインデント階層を縦線で協調表示してくれるツールです.
-  
+| アイコン | 拡張機能名 | 使用用途 |
+| --- | --- | --- |
+| <img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/9d5fefbe-694a-43a8-af04-e98ad602bb6d" /> | MATLAB | VSCode で MATLAB を実行するツール. |
+| <img width="176" height="199" alt="image" src="https://github.com/user-attachments/assets/57180c1c-e0d1-4885-9019-02d92c3d4621" /> | Japanese Language Pack for Visual Studio Code | VSCode はデフォルトの表示言語が英語になっているため, 表示言語を日本語にすることができます. |
+| <img width="185" height="192" alt="image" src="https://github.com/user-attachments/assets/2c719c8c-8090-4e8f-adb8-997761cd476b" /> | GitLens | VSCode 上でソースコードのコミット履歴等を確認することができる強力ツールです. |
+| <img width="168" height="168" alt="image" src="https://github.com/user-attachments/assets/e868de76-bf25-4f3f-a17a-1af42a657bd7" /> | Indent Rainbow | VSCode でコードのインデントを色分けして表示してくれるツールです. |
+| <img width="154" height="156" alt="image" src="https://github.com/user-attachments/assets/0b5e7fe0-f06a-48d3-b579-4c8d7f44ebd9" /> | Identicator | 現在カーソルがあるインデント階層を縦線で協調表示してくれるツールです. |
 
-## HITRANによる混合ガスの透過率スペクトル取得方法について
+## データ処理プログラムの解説
+
+## 付録
+### HITRANによる混合ガスの透過率スペクトル取得方法について
 > [!NOTE]
 > データを作成するためには, まず**アカウントを作成する**必要があります. 右上の鍵マークからアカウントを作成してください.
 > <img width="1676" height="328" alt="image" src="https://github.com/user-attachments/assets/3af9d48b-fd7a-4307-abf7-c1d7db4a7e4b" /> <br>
