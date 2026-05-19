@@ -5,18 +5,27 @@ Mail: 25kmh28@ms.dendai.ac.jp (学校用) / yuma.0706.1510111@outlook.jp (個人
 
 ## 目次
 1. [内容](#内容)
-2. [プログラムに必要なもの](#プログラムに必要なもの) 
-3. [HITRANによる混合ガスの透過率スペクトル取得方法について](#HITRANによる混合ガスの透過率スペクトル取得方法について)
+2. [プログラムに必要なもの](#プログラムに必要なもの)
+3. [データ処理プログラムの解説](#データ処理プログラムの解説)
+4. [その他のソフトウェアについて](#その他のソフトウェアについて) <br>
+   4.1 [HITRANによる混合ガスの透過率スペクトル取得方法について](#HITRANによる混合ガスの透過率スペクトル取得方法について)
+5. [免責事項](#免責事項)
 
 ## 内容
-MathWorks社が提供するMATLABを用いて, データ処理からグラフ表示までを一括して行うプログラムを生成します.
+MathWorks社が提供するMATLABを用いて, データ処理からグラフ表示までを一括して行うプログラムを構築します.
 <br>
-本ページでは, 私が修士課程で行った研究内容とともに, 基本知識について解説します.
+本ページでは, 私が修士課程で行った研究内容とともに, プログラムについて解説します.
 
 ### 卒業研究内容
 [Bachelor's Research.pdf](https://github.com/tdu-my/Automatic-Edge-Region-Processing-for-Spectral-Interpolation/blob/main/Bachelor's%20Research.pdf)というファイル名で保存しているので, 詳細はそちらを参照してください.
 
 学士論文は[こちら](https://github.com/tdu-my/Automatic-Edge-Region-Processing-for-Spectral-Interpolation/blob/main/2024%20Bachelor's%20thesis_Yuma%20Mitsuoka.pdf)
+
+### プログラムのダウンロード
+MATLABプログラムは以下からリポジトリ全体をzip形式でダウンロードしてください. <br>
+[Download Zip（最新版）](https://github.com/o2my76/AutoInterpolate/archive/refs/heads/main.zip)
+
+動作環境：MATLAB R2025b 以降
 
 ## プログラムに必要なもの
 ### 1. MATLAB
@@ -29,8 +38,10 @@ MATLABをインストールしてください.
 ### 2. 使用する MATLAB Toolbox
 下記の Toolbox のインストールが必要です.
 
-  - Signal Processing Toolbox
-  - Curve Fitting Toolbox
+| アイコン | Toolbox | 使用用途 |
+| --- | --- | --- |
+| <img width="199" height="142" alt="image" src="https://github.com/user-attachments/assets/963ec24e-512e-4074-82f4-cc21ae08d081" /> | Signal Processing Toolbox | 信号処理用の Toolbox です. 均一 / 不均一 にサンプリングされた信号の管理・解析・前処理・特徴抽出を行うことができます. |
+| <img width="203" height="143" alt="image" src="https://github.com/user-attachments/assets/f5469b4d-a800-47ed-9cd6-1c733b6cee77" /> | Curve Fitting Toolbox | 測定データに対して曲線や曲面を当てはめるための Toolbox です. 本研究では, 測定データへの関数によるフィッティングのために使用しています. |
 
 MATLAB インストール時にまとめて追加できます. インストール済みの場合は「ホーム > アドオン」から検索し、インストールしてください.
 
@@ -50,18 +61,86 @@ Visual Studio Code のダウンロードリンクは[こちら](https://code.vis
 
 ### 5. 使用する VSCode 拡張機能
 VSCode には様々な拡張機能がありますが, ここでは必須の拡張機能に加え, 便利な拡張機能を紹介します.
-  - **MATLAB (必須)**
-  - **Japanese Language Pack for Visual Studio Code** <br>
-　VSCode はデフォルトの表示言語が英語になっているため, 表示言語を日本語にすることができます.
-  - **GitLens** <br>
-  　VSCode 上でソースコードのコミット履歴等を確認することができる強力ツールです.
-  - **Indent Rainbow** <br>
-  　VSCode でコードのインデントを色分けして表示してくれるツールです.
-  - **Identicator** <br>
-  　現在カーソルがあるインデント階層を縦線で協調表示してくれるツールです.
-  
 
-## HITRANによる混合ガスの透過率スペクトル取得方法について
+| アイコン | 拡張機能名 | 使用用途 |
+| --- | --- | --- |
+| <img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/9d5fefbe-694a-43a8-af04-e98ad602bb6d" /> | MATLAB | VSCode で MATLAB を実行するための必須ツールです. |
+| <img width="176" height="199" alt="image" src="https://github.com/user-attachments/assets/57180c1c-e0d1-4885-9019-02d92c3d4621" /> | Japanese Language Pack for Visual Studio Code | VSCode ではデフォルトの表示言語が英語になっているため, 表示言語を日本語にすることができるツールです. |
+| <img width="185" height="192" alt="image" src="https://github.com/user-attachments/assets/2c719c8c-8090-4e8f-adb8-997761cd476b" /> | GitLens | VSCode 上でソースコードのコミット履歴等を確認することができる強力ツールです. |
+| <img width="168" height="168" alt="image" src="https://github.com/user-attachments/assets/e868de76-bf25-4f3f-a17a-1af42a657bd7" /> | Indent Rainbow | VSCode でコードのインデントを色分けして表示してくれるツールです. |
+| <img width="154" height="156" alt="image" src="https://github.com/user-attachments/assets/0b5e7fe0-f06a-48d3-b579-4c8d7f44ebd9" /> | Identicator | 現在カーソルがあるインデント階層を縦線で強調表示してくれるツールです. |
+
+### 6. Mathematica
+Mathematica とは, Wolfram Research社が開発した技術計算システムです. 
+<br>
+東京電機大学は, Mathematica のサイトライセンス契約を結んでいるため, **大学のメールアドレス**で Mathematica を入手できます.
+
+詳細は[こちら](https://www.mrcl.dendai.ac.jp/mrcl/it-service/software/mathematica/)
+
+## データ処理プログラムの解説
+主な処理内容は以下のとおりです.
+
+| No. | 処理項目 | 処理内容 | 使用する関数 |
+| --- | --- | --- | --- |
+| 1 | 波長計 txt データの読み込み | 取得データから光中心波長・光周波数シフト量の推定値を測定します. | `readtable`, `findpeaks` |
+| 2 | HITRAN txt データの読み込み | 吸収線データベース（HITRAN）を読み込みます. | `readtable` |
+| 3 | Bin ファイルの読み込み | Alazar で取得した時間波形（インターフェログラム）を読み込みます. | `fopen`, `fread`, `fclose` |
+| 4 | フーリエ変換・RF 周波数軸の生成 | 時間波形から周波数スペクトルに変換し, サンプル数とサンプリングレートからRF周波数軸を生成します. | `fft` |
+| 5 | RF 吸収スペクトルの取得 | RF 透過スペクトルをRF参照スペクトルで除算することでRF吸収スペクトルを取得します. |
+| 6 | スムージング処理（移動平均処理） | RF 吸収スペクトルに含まれる細かなノイズを低減することで, 吸収線を見やすくします. | `movmean` |
+| 7 | RF 吸収ピーク位置の抽出 | RF 吸収ピーク位置を抽出し, 後の光周波数シフト量の計測に使用します. | `findpeaks` |
+| 8 | 光周波数シフト量の計測 | 隣接する RF 吸収ピーク位置からピーク間隔を計測し, 光周波数シフト量の計測を行います. | 
+| 9 | RF 領域から光領域への換算 | 計測した光周波数シフト量を用いて RF 領域から光領域への換算処理を行います. | `cellfun`, `vertcat` |
+| 10 | 光吸収スペクトルの取得 | 透過光スペクトルを参照光スペクトルで除算することで光吸収スペクトルを取得します. |
+| 11 | 光吸収スペクトルのベースライン補正 | 2×2カプラ の特性に起因して生じるベースラインの傾きを補正します. | `fitoptions`, `fit`, `feval`, `coeffvalues` |
+| 12 | 光吸収ピーク位置の抽出 | 光吸収ピーク位置を抽出し, HITRAN の吸収ピーク位置との残差を測定に使用します. | `findpeaks` |
+| 13 | ピーク位置残差の標準偏差の測定・評価 | 取得データと HITRAN とのピーク位置の残差を測定し, 標準偏差を算出します. | `findpeaks` |
+
+### 入力データ
+本プログラムでは, 以下のデータを入力として使用します.
+
+| データ | 使用用途 |
+| --- | --- |
+| 波長計 txt データ | 光中心周波数と光周波数シフト量の推定に使用します. |
+| HITRAN txt データ | 測定した光吸収スペクトルとの比較・評価に使用します. |
+| Alazar Bin データ | データ処理の元データとして使用します. |
+
+### 出力結果
+本プログラムを実行することで, 以下の結果を出力します.
+
+| Figure No. | 出力内容 | 説明 |
+| --- | --- | --- |
+| 1 | 光中心周波数の変動波形 | 測定したタイミングから 1 s の範囲で波長計で取得した時間波形 |
+| 2, 3 | インターフェログラム | No.2：RF 参照側, No.3：RF 透過側 のインターフェログラム |
+| 4, 5 | RF コムスペクトル | No.4：スムージング前, No.5：スムージング後 の RF コム |
+| 6, 7, 8 | RF 吸収スペクトル | No.5：マスク前, No.6：マスク後, No.7：ピークプロット後 の RF 吸収スペクトル |
+| 9, 10 | 切り取り前の EO コムスペクトル | No.9：推定値, No.10：提案手法 によって計測した光周波数シフト量を用いて光領域へ換算した EO コムスペクトル |
+| 11, 13 | 切り取り後の EO コムスペクトル | No.11：推定値, No.13：提案手法 によって取得した EO コムスペクトルの切り取り後の結果 |
+| 12, 14 | 光吸収スペクトル & HITRAN | No.12：推定値, No.14：提案手法 によって取得した光吸収スペクトルと HITRAN の重ね合わせた結果 |
+| 15, 16 | ピークフィットに伴うベースライン補正用マスク範囲の指定 | No.15：推定値, No.16：提案手法 において吸収線ピーク周辺部分の影響を受けずにベースライン補正を行うためのマスク範囲を破線で表示 |
+| 17, 18 | ベースライン補正用の近似曲線 | No.17：推定値, No.18：提案手法 においてベースライン補正用の近似曲線の出力結果 |
+| 19, 20 | ベースライン補正後の光吸収スペクトル & HITRAN | No.19：推定値, No.20：提案手法 においてベースライン補正後の光吸収スペクトル |
+
+### 使用方法
+
+1. Alazar で取得した Bin データを保存します.
+   この時, ファイル名は`1`として保存します
+2. 保存後に生成される以下の2つの Bin データを新規フォルダにまとめます.
+   ```text
+   1_1.1.1.1.A.bin
+   1_1.1.1.1.B.bin
+   ```
+   フォルダ名の例：`my00`
+3. Alazar でデータを取得した時刻を記録し，同時に波長計の lta データを保存します. <br>
+   この時，lta データのファイル名は，**Bin データを保存したフォルダ名と同じ**にします.
+4. `lta_txt変換プログラム.nb`を用いて, 波長計で取得した lta データを txt データに変換します.
+5. MATLABプログラム内で, 実行するフォルダ名と波長計データの取得時刻を入力します.
+6. 実験条件に合わせてそのほかの変数を変更し, プログラムを実行します.
+
+
+
+## その他のソフトウェアについて
+### HITRANによる混合ガスの透過率スペクトル取得方法について
 > [!NOTE]
 > データを作成するためには, まず**アカウントを作成する**必要があります. 右上の鍵マークからアカウントを作成してください.
 > <img width="1676" height="328" alt="image" src="https://github.com/user-attachments/assets/3af9d48b-fd7a-4307-abf7-c1d7db4a7e4b" /> <br>
